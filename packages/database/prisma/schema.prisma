@@ -1,0 +1,127 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["rhel-openssl-1.0.x", "rhel-openssl-3.0.x", "darwin-arm64"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Admin {
+  adminId        Int    @id @default(autoincrement()) @map("admin_id")
+  firstName      String @map("first_name") @db.VarChar(50)
+  lastName       String @map("last_name") @db.VarChar(50)
+  email          String @unique @map("email") @db.VarChar(100)
+  hashedPassword String @map("hashed_password") @db.VarChar(255)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  @@index([email])
+  @@map("admins")
+}
+
+model User {
+  userId      Int    @id @default(autoincrement()) @map("user_id")
+  firstName   String @map("first_name") @db.VarChar(50)
+  lastName    String @map("last_name") @db.VarChar(50)
+  email       String @map("email") @db.VarChar(100)
+  phoneNumber String @map("phone_number") @db.VarChar(20)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  reservations Reservation[]
+
+  @@map("users")
+}
+
+model Service {
+  serviceId   Int     @id @default(autoincrement()) @map("service_id")
+  name        String  @map("name") @db.VarChar(100)
+  description String? @map("description") @db.Text
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  reservations Reservation[]
+
+  @@map("services")
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+model Reservation {
+  reservationId Int               @id @default(autoincrement()) @map("reservation_id")
+  serviceId     Int               @map("service_id")
+  userId        Int               @map("user_id")
+  startDateTime DateTime          @map("start_date") @db.Timestamptz()
+  endDateTime   DateTime          @map("end_date") @db.Timestamptz()
+  participants  Int               @map("participants")
+  otherInfo     String?           @map("other_info") @db.Text
+  status        ReservationStatus @default(PENDING) @map("status")
+  totalPrice    Int               @map("total_price")
+  discount      Int               @default(0) @map("discount")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  user               User                @relation(fields: [userId], references: [userId], onDelete: Restrict, onUpdate: Cascade)
+  service            Service             @relation(fields: [serviceId], references: [serviceId], onDelete: Restrict, onUpdate: Cascade)
+  optionReservations OptionReservation[]
+
+  @@index([userId])
+  @@index([serviceId])
+  @@index([startDateTime, endDateTime])
+  @@map("reservations")
+}
+
+model Option {
+  optionId    Int     @id @default(autoincrement()) @map("option_id")
+  name        String  @map("name") @db.VarChar(100)
+  description String? @map("description") @db.Text
+  price       Int     @map("price")
+  limit       Int?    @map("limit")
+  displayType String  @default("input") @map("display_type") @db.VarChar(20)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  optionReservations OptionReservation[]
+
+  @@map("options")
+}
+
+model OptionReservation {
+  optionId      Int @map("option_id")
+  reservationId Int @map("reservation_id")
+  quantity      Int @map("quantity")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  reservation Reservation @relation(fields: [reservationId], references: [reservationId], onDelete: Cascade, onUpdate: Cascade)
+  option      Option      @relation(fields: [optionId], references: [optionId], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([reservationId, optionId])
+  @@index([reservationId])
+  @@index([optionId])
+  @@map("option_reservations")
+}
+
+model DiscoveryMethod {
+  discoveryMethodId Int    @id @default(autoincrement()) @map("discovery_method_id")
+  name              String @map("name") @db.VarChar(100)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  @@map("discovery_methods")
+}

@@ -1,0 +1,23 @@
+{
+  "name": "zen-reserve",
+  "version": "0.0.0",
+  "author": "0xHCl <info@0xhcl.dev> (https://0xhcl.dev/)",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "start": "turbo run start",
+    "db:migrate:deploy": "turbo run db:migrate:deploy",
+    "db:push": "turbo run db:push",
+    "db:generate": "turbo run db:generate",
+    "check": "biome check . --write --unsafe"
+  },
+  "packageManager": "npm@10.8.1",
+  "workspaces": ["apps/*", "packages/*"],
+  "devDependencies": {
+    "@biomejs/biome": "1.8.3",
+    "lefthook": "^1.7.7",
+    "turbo": "^2.0.9"
+  }
+}
