@@ -1,4 +1,5 @@
 export type IFormInput = {
+  serviceName: string;
   startDateTime?: Date;
   endDateTime?: Date;
   options: {

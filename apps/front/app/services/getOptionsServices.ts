@@ -4,8 +4,8 @@ type OptionServiceParams = {
   serviceName: string;
 };
 
-export async function getOptionServices({ serviceName }: OptionServiceParams) {
-  const optionServices = await prisma.optionService.findMany({
+export async function getOptionsServices({ serviceName }: OptionServiceParams) {
+  const optionsServices = await prisma.optionService.findMany({
     where: {
       service: {
         name: serviceName,
@@ -19,5 +19,5 @@ export async function getOptionServices({ serviceName }: OptionServiceParams) {
       order: "asc",
     },
   });
-  return optionServices;
+  return optionsServices;
 }

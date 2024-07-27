@@ -1,6 +1,4 @@
 import NavBar from "@/app/components/common/NavBar";
-import Confirmation from "@/app/layouts/Confirmation";
-import { getOptionsServices } from "@/app/services/getOptionsServices";
 import { getService } from "@/app/services/getService";
 import { redirect } from "next/navigation";
 
@@ -13,13 +11,17 @@ export default async function Page({
     redirect("/");
   }
 
-  const options = await getOptionsServices({ serviceName });
-
   return (
     <>
       <NavBar serviceName={serviceName} />
-      <main className="mx-auto max-w-4xl pt-24 pb-12">
-        <Confirmation options={options} serviceName={serviceName} />
+      <main className="flex flex-col items-center gap-8 pt-24 pb-12">
+        <p className="font-bold text-2xl">予約が完了しました。</p>
+        <a
+          href="https://www.saunping.jp/"
+          className="relative flex h-12 w-fit items-center justify-center rounded-lg border-2 border-[#2C2C2C] bg-[#2C2C2C] px-4 py-3 font-semibold text-md text-white transition hover:opacity-80"
+        >
+          ホームに戻る
+        </a>
       </main>
     </>
   );

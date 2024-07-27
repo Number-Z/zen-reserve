@@ -43,6 +43,12 @@ export default function ReservationForm({
   const methods = useFormContext<IFormInput>();
   const router = useRouter();
 
+  // サービス名セット
+  useEffect(() => {
+    if (!methods.setValue) return;
+    methods.setValue("serviceName", serviceName);
+  }, [serviceName, methods.setValue]);
+
   // 価格計算
   const memoizedCalculateTotalPrice = useMemo(() => {
     return (
@@ -53,40 +59,19 @@ export default function ReservationForm({
     ): number => {
       let totalPrice = 5000;
 
-      // Boolean型のオプションを処理
-      const booleanOptions = [
-        "tentSetup",
-        "firewood",
-        "saunaOil",
-        "bbqSet",
-      ] as const;
-      for (const optionName of booleanOptions) {
-        if (selectedOptions[optionName]) {
-          const option = availableOptions.find(
-            (o) => o.option.name === optionName,
-          );
-          if (option) {
-            totalPrice += option.option.price;
-          }
-        }
-      }
-
-      // 数値型のオプションを処理
-      const numberOptions = [
-        "additionalChairs",
-        "swimWears",
-        "bathTowels",
-        "crocses",
-        "saunaHats",
-      ] as const;
-      for (const optionName of numberOptions) {
-        const quantity = selectedOptions[optionName];
-        if (quantity > 0) {
-          const option = availableOptions.find(
-            (o) => o.option.name === optionName,
-          );
-          if (option) {
-            totalPrice += option.option.price * quantity;
+      for (const [optionName, optionValue] of Object.entries(selectedOptions)) {
+        const option = availableOptions.find(
+          (o) => o.option.name === optionName,
+        );
+        if (option) {
+          if (typeof optionValue === "boolean") {
+            if (optionValue) {
+              totalPrice += option.option.price;
+            }
+          } else if (typeof optionValue === "number") {
+            if (optionValue > 0) {
+              totalPrice += option.option.price * optionValue;
+            }
           }
         }
       }
@@ -129,7 +114,7 @@ export default function ReservationForm({
       <div className="col-span-1 flex justify-center">
         <MemoizedCalendar minDate={minDate} />
       </div>
-      <div className="col-span-1 flex flex-col gap-8 lg:col-span-2">
+      <div className="col-span-1 mx-auto flex max-w-4xl flex-col gap-8 lg:col-span-2">
         <MemoizedTime />
         <MemoizedOptions options={options} />
         <MemoizedCustomer />

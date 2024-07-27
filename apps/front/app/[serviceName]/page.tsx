@@ -1,7 +1,7 @@
 import NavBar from "@/app/components/common/NavBar";
 import ReservationForm from "@/app/layouts/ReservationForm";
 import { getDiscoveryMethods } from "@/app/services/getDiscoveryMethods";
-import { getOptionServices } from "@/app/services/getOptionServices";
+import { getOptionsServices } from "@/app/services/getOptionsServices";
 import { getService } from "@/app/services/getService";
 import { addHours } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
@@ -17,7 +17,7 @@ export default async function Page({
   }
 
   const minDate = addHours(toZonedTime(new Date(), "Asia/Tokyo"), 48);
-  const options = await getOptionServices({ serviceName });
+  const options = await getOptionsServices({ serviceName });
   const discoveryMethods = await getDiscoveryMethods();
 
   return (

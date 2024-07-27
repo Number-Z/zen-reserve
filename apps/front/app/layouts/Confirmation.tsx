@@ -56,7 +56,7 @@ export default function Confirmation({
           <Notes />
         </section>
         <section>
-          <ConfirmationActions />
+          <ConfirmationActions serviceName={serviceName} />
         </section>
       </div>
     </>

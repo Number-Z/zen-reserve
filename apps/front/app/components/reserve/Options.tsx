@@ -30,7 +30,7 @@ export default function Options({ options }: OptionsProps) {
                 id={option.option.name}
                 className="block w-full rounded-lg border border-gray-200 p-4 text-sm focus:border-blue-500 focus:ring-blue-500 disabled:pointer-events-none disabled:opacity-50"
               >
-                <option defaultValue="0">選択してください</option>
+                <option value="0">0</option>
                 {Array.from({ length: option.option.limit ?? 12 }, (_, i) => (
                   <option key={`${option.optionId}-${i}`} value={i + 1}>
                     {i + 1}

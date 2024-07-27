@@ -6,6 +6,7 @@ import * as z from "zod";
 const minDate = addHours(toZonedTime(new Date(), "Asia/Tokyo"), 48);
 
 export const schema = z.object({
+  serviceName: z.string(),
   startDateTime: z
     .date({ message: "日時を選択してください" })
     .min(minDate, "その日時はもう予約できません"),
