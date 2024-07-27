@@ -4,8 +4,6 @@ interface ButtonProps {
   children: React.ReactNode;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
-  outline?: boolean;
-  small?: boolean;
   type?: "button" | "submit" | "reset";
 }
 
@@ -13,8 +11,6 @@ const Button: React.FC<ButtonProps> = ({
   children,
   onClick,
   disabled,
-  outline,
-  small,
   type = "button",
 }) => {
   return (

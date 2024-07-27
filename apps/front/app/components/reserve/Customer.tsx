@@ -77,7 +77,9 @@ export default function Customer() {
           参加人数
         </label>
         <select
-          {...register("customer.participants")}
+          {...register("customer.participants", {
+            valueAsNumber: true,
+          })}
           id="participants"
           className="block w-full rounded-lg border border-gray-200 p-4 text-sm focus:border-blue-500 focus:ring-blue-500 disabled:pointer-events-none disabled:opacity-50"
         >

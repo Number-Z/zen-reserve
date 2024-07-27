@@ -24,7 +24,9 @@ export default function Options({ options }: OptionsProps) {
                 </span>
               </label>
               <select
-                {...register(`options.${option.option.name}`)}
+                {...register(`options.${option.option.name}`, {
+                  valueAsNumber: true,
+                })}
                 id={option.option.name}
                 className="block w-full rounded-lg border border-gray-200 p-4 text-sm focus:border-blue-500 focus:ring-blue-500 disabled:pointer-events-none disabled:opacity-50"
               >

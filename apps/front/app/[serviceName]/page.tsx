@@ -23,7 +23,7 @@ export default async function Page({
   return (
     <>
       <NavBar serviceName={serviceName} />
-      <main className="py-24">
+      <main className="pt-24 pb-12">
         <ReservationForm
           serviceName={serviceName}
           minDate={minDate}

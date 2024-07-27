@@ -16,27 +16,37 @@ export const schema = z.object({
     saunaOil: z.boolean(),
     bbqSet: z.boolean(),
     additionalChairs: z
-      .number({ coerce: true })
+      .number({
+        required_error: "数値を入力してください",
+      })
       .int("整数を入力してください")
       .nonnegative("0以上の数を選択してください")
       .max(12, "12以下の数を選択してください"),
     swimWears: z
-      .number({ coerce: true })
+      .number({
+        required_error: "数値を入力してください",
+      })
       .int("整数を入力してください")
       .nonnegative("0以上の数を選択してください")
       .max(12, "12以下の数を選択してください"),
     bathTowels: z
-      .number({ coerce: true })
+      .number({
+        required_error: "数値を入力してください",
+      })
       .int("整数を入力してください")
       .nonnegative("0以上の数を選択してください")
       .max(12, "12以下の数を選択してください"),
     crocses: z
-      .number({ coerce: true })
+      .number({
+        required_error: "数値を入力してください",
+      })
       .int("整数を入力してください")
       .nonnegative("0以上の数を選択してください")
       .max(12, "12以下の数を選択してください"),
     saunaHats: z
-      .number({ coerce: true })
+      .number({
+        required_error: "数値を入力してください",
+      })
       .int("整数を入力してください")
       .nonnegative("0以上の数を選択してください")
       .max(12, "12以下の数を選択してください"),
@@ -49,9 +59,11 @@ export const schema = z.object({
       message: "正しい電話番号を入力してください",
     }),
     participants: z
-      .number({ coerce: true })
+      .number({
+        required_error: "数値を入力してください",
+      })
       .int("整数を入力してください")
-      .min(1, "1人以上で予約してください"),
+      .positive("1人以上で予約してください"),
     otherInfo: z.string().optional(),
   }),
   discoveryMethods: z.array(z.string()),

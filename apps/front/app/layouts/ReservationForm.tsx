@@ -7,9 +7,7 @@ import DiscoveryMethod from "@/app/components/reserve/DiscoveryMethod";
 import Options from "@/app/components/reserve/Options";
 import Summary from "@/app/components/reserve/Summary";
 import Time from "@/app/components/reserve/Time";
-import { schema } from "@/app/consts/zod";
 import type { IFormInput } from "@/app/types/IFormInput";
-import { zodResolver } from "@hookform/resolvers/zod";
 import type {
   DiscoveryMethod as IDiscoveryMethod,
   Option,
@@ -18,12 +16,7 @@ import type {
 import { addHours } from "date-fns";
 import { useRouter } from "next/navigation";
 import { memo, useCallback, useEffect, useMemo } from "react";
-import {
-  type SubmitHandler,
-  useForm,
-  useFormContext,
-  useWatch,
-} from "react-hook-form";
+import { type SubmitHandler, useFormContext, useWatch } from "react-hook-form";
 
 type ReservationFormProps = {
   serviceName: string;
