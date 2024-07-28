@@ -7,19 +7,15 @@ import type { Option, OptionService } from "@prisma/client";
 import { CircleAlert } from "lucide-react";
 
 type ConfirmationProps = {
-  serviceName: string;
   options: (OptionService & {
     option: Option;
   })[];
 };
 
-export default function Confirmation({
-  serviceName,
-  options,
-}: ConfirmationProps) {
+export default function Confirmation({ options }: ConfirmationProps) {
   return (
     <>
-      <CheckValues serviceName={serviceName} />
+      <CheckValues />
       <div className="flex flex-col gap-4">
         <h2 className="font-bold text-gray-900 text-xl">内容確認</h2>
         <section className="flex flex-col items-center gap-4">
@@ -56,7 +52,7 @@ export default function Confirmation({
           <Notes />
         </section>
         <section>
-          <ConfirmationActions serviceName={serviceName} />
+          <ConfirmationActions />
         </section>
       </div>
     </>

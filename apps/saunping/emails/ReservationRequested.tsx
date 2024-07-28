@@ -1,3 +1,4 @@
+import { SERVICE_NAME } from "@/app/consts/consts";
 import {
   Body,
   Container,
@@ -11,7 +12,6 @@ import {
 } from "@react-email/components";
 
 type CompleteProps = {
-  serviceName: string;
   reservationDetails: { label: string; value: string }[];
   options: { label: string; value: string }[];
 };
@@ -30,14 +30,13 @@ const renderTableRow = (label: string, value: string) => (
 );
 
 export default function ReservationRequested({
-  serviceName,
   reservationDetails,
   options,
 }: CompleteProps) {
   return (
     <Html lang="ja">
       <Head>
-        <title>予約リクエスト完了 - {serviceName.toUpperCase()}</title>
+        <title>予約リクエスト完了 - {SERVICE_NAME}</title>
       </Head>
       <Tailwind>
         <Body className="bg-white font-sans">
@@ -46,14 +45,15 @@ export default function ReservationRequested({
               src="https://www.saunping.jp/wp-content/uploads/2023/09/S__16113680-removebg-preview.png" // TODO: TBD
               width="42"
               height="42"
-              alt={serviceName}
+              alt={SERVICE_NAME}
               className="h-[42px] w-[42px]"
             />
             <Heading className="pt-4 font-bold text-2xl text-gray-700">
-              予約リクエスト完了 - {serviceName.toUpperCase()}
+              予約リクエスト完了 - {SERVICE_NAME}
             </Heading>
             <Text className="mb-4 text-base text-gray-600 leading-relaxed">
-              この度はサウンピングをご利用くださいまして誠にありがとうございます。
+              この度は{SERVICE_NAME}
+              をご利用くださいまして誠にありがとうございます。
               <br />
               下記の通りご予約のリクエストをお受けいたしましたのでご確認をお願いいたします。
               <br />
@@ -73,7 +73,7 @@ export default function ReservationRequested({
             </table>
             <Hr className="my-10 border-gray-300" />
             <Text className="text-gray-500 text-sm">
-              SAUNPING事務所
+              {SERVICE_NAME}事務所
               <br />
               高知県高知市内寿町7-10
               <br />

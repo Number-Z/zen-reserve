@@ -1,5 +1,6 @@
 "use server";
 
+import { SERVICE_NAME } from "@/app/consts/consts";
 import { RESERVATION_STATUS } from "@/app/consts/status";
 import { getOptionsServices } from "@/app/services/getOptionsServices";
 import { sendEmail } from "@/app/services/sendEmail";
@@ -10,17 +11,15 @@ import { format } from "date-fns";
 export async function createReservation(values: IFormInput, _: FormData) {
   // サービスを名前で検索
   const service = await prisma.service.findUnique({
-    where: { name: values.serviceName },
+    where: { name: SERVICE_NAME },
   });
 
   if (!service) {
-    throw new Error(`Service with name ${values.serviceName} not found`);
+    throw new Error(`Service with name ${SERVICE_NAME} not found`);
   }
 
   // オプションを取得
-  const optionsServices = await getOptionsServices({
-    serviceName: values.serviceName,
-  });
+  const optionsServices = await getOptionsServices();
 
   // totalPriceの計算
   let totalPrice = 5000; // 基本料金
@@ -63,33 +62,30 @@ export async function createReservation(values: IFormInput, _: FormData) {
     discoveryMethodName: methodName,
   }));
 
-  // const reservation = await prisma.reservation.create({
-  //   data: {
-  //     serviceId: service.serviceId,
-  //     // biome-ignore lint/style/noNonNullAssertion: バリデーション済みのため
-  //     startDateTime: values.startDateTime!,
-  //     // biome-ignore lint/style/noNonNullAssertion: バリデーション済みのため
-  //     endDateTime: values.endDateTime!,
-  //     firstName: values.customer.firstName,
-  //     lastName: values.customer.lastName,
-  //     email: values.customer.email,
-  //     phoneNumber: values.customer.phoneNumber,
-  //     participants: values.customer.participants,
-  //     otherInfo: values.customer.otherInfo,
-  //     status: RESERVATION_STATUS.PENDING,
-  //     totalPrice: totalPrice,
-  //     discount: 0,
-  //     optionReservations: {
-  //       create: optionReservationsData,
-  //     },
-  //     discoveryMethods: {
-  //       create: discoveryMethodsData,
-  //     },
-  //   },
-  // });
-  const reservation = {
-    reservationId: 1,
-  };
+  const reservation = await prisma.reservation.create({
+    data: {
+      serviceId: service.serviceId,
+      // biome-ignore lint/style/noNonNullAssertion: バリデーション済みのため
+      startDateTime: values.startDateTime!,
+      // biome-ignore lint/style/noNonNullAssertion: バリデーション済みのため
+      endDateTime: values.endDateTime!,
+      firstName: values.customer.firstName,
+      lastName: values.customer.lastName,
+      email: values.customer.email,
+      phoneNumber: values.customer.phoneNumber,
+      participants: values.customer.participants,
+      otherInfo: values.customer.otherInfo,
+      status: RESERVATION_STATUS.PENDING,
+      totalPrice: totalPrice,
+      discount: 0,
+      optionReservations: {
+        create: optionReservationsData,
+      },
+      discoveryMethods: {
+        create: discoveryMethodsData,
+      },
+    },
+  });
 
   // 予約詳細の配列
   const reservationDetails = [
@@ -145,7 +141,6 @@ export async function createReservation(values: IFormInput, _: FormData) {
 
   await sendEmail({
     to: values.customer.email,
-    serviceName: values.serviceName,
     reservationDetails: reservationDetails,
     options,
   });

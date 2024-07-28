@@ -4,22 +4,19 @@ import { getOptionsServices } from "@/app/services/getOptionsServices";
 import { getService } from "@/app/services/getService";
 import { redirect } from "next/navigation";
 
-export default async function Page({
-  params,
-}: { params: { serviceName: string } }) {
-  const serviceName = params.serviceName;
-  const service = await getService(serviceName);
+export default async function Page() {
+  const service = await getService();
   if (!service) {
     redirect("/");
   }
 
-  const options = await getOptionsServices({ serviceName });
+  const options = await getOptionsServices();
 
   return (
     <>
-      <NavBar serviceName={serviceName} />
+      <NavBar />
       <main className="mx-auto max-w-4xl pt-24 pb-12">
-        <Confirmation options={options} serviceName={serviceName} />
+        <Confirmation options={options} />
       </main>
     </>
   );

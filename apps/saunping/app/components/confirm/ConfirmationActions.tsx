@@ -9,13 +9,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useFormContext } from "react-hook-form";
 
-type ConfirmationActionsProps = {
-  serviceName: string;
-};
-
-export default function ConfirmationActions({
-  serviceName,
-}: ConfirmationActionsProps) {
+export default function ConfirmationActions() {
   const router = useRouter();
 
   const [isAgreed, setIsAgreed] = useState(false);
@@ -25,7 +19,7 @@ export default function ConfirmationActions({
     startTransition(async () => {
       try {
         await createReservationWithValues(formData);
-        router.push(`/${serviceName}/complete`);
+        router.push("/complete");
       } catch (error) {
         console.error(error);
       }
@@ -74,7 +68,7 @@ export default function ConfirmationActions({
         <div className="mx-auto grid w-full grid-cols-4 gap-4 p-4 md:w-1/2">
           <div className="col-span-2 w-full">
             <Link
-              href={`/${serviceName}`}
+              href="/"
               aria-disabled={isPending}
               tabIndex={isPending ? -1 : 0}
               className={`relative flex h-12 w-full items-center justify-center rounded-lg border-2 border-[#2C2C2C] bg-[#2C2C2C] py-3 font-semibold text-md text-white transition hover:opacity-80 ${isPending ? "pointer-events-none cursor-not-allowed opacity-70" : ""}`}

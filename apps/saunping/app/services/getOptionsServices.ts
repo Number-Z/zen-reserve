@@ -1,16 +1,13 @@
 "use server";
 
+import { SERVICE_NAME } from "@/app/consts/consts";
 import prisma from "@zen-reserve/database";
 
-type OptionServiceParams = {
-  serviceName: string;
-};
-
-export async function getOptionsServices({ serviceName }: OptionServiceParams) {
+export async function getOptionsServices() {
   const optionsServices = await prisma.optionService.findMany({
     where: {
       service: {
-        name: serviceName,
+        name: SERVICE_NAME,
       },
     },
     include: {

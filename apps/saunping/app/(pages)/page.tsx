@@ -7,25 +7,21 @@ import { addHours } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
 import { redirect } from "next/navigation";
 
-export default async function Page({
-  params,
-}: { params: { serviceName: string } }) {
-  const serviceName = params.serviceName;
-  const service = await getService(serviceName);
+export default async function Page() {
+  const service = await getService();
   if (!service) {
     redirect("/");
   }
 
   const minDate = addHours(toZonedTime(new Date(), "Asia/Tokyo"), 48);
-  const options = await getOptionsServices({ serviceName });
+  const options = await getOptionsServices();
   const discoveryMethods = await getDiscoveryMethods();
 
   return (
     <>
-      <NavBar serviceName={serviceName} />
+      <NavBar />
       <main className="pt-24 pb-12">
         <ReservationForm
-          serviceName={serviceName}
           minDate={minDate}
           options={options}
           discoveryMethods={discoveryMethods}

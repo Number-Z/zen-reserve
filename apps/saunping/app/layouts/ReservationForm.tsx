@@ -19,7 +19,6 @@ import { memo, useCallback, useEffect, useMemo } from "react";
 import { type SubmitHandler, useFormContext, useWatch } from "react-hook-form";
 
 type ReservationFormProps = {
-  serviceName: string;
   minDate: Date;
   options: (OptionService & {
     option: Option;
@@ -35,19 +34,12 @@ const MemoizedDiscoveryMethod = memo(DiscoveryMethod);
 const MemoizedDetails = memo(Details);
 
 export default function ReservationForm({
-  serviceName,
   minDate,
   options,
   discoveryMethods,
 }: ReservationFormProps) {
   const methods = useFormContext<IFormInput>();
   const router = useRouter();
-
-  // サービス名セット
-  useEffect(() => {
-    if (!methods.setValue) return;
-    methods.setValue("serviceName", serviceName);
-  }, [serviceName, methods.setValue]);
 
   // 価格計算
   const memoizedCalculateTotalPrice = useMemo(() => {
@@ -103,8 +95,8 @@ export default function ReservationForm({
   }, [startDateTime, watchedOptions.bbqSet, methods.setValue]);
 
   const onSubmit = useCallback<SubmitHandler<IFormInput>>(() => {
-    router.push(`/${serviceName}/confirm`);
-  }, [router, serviceName]);
+    router.push("/confirm");
+  }, [router]);
 
   return (
     <form
