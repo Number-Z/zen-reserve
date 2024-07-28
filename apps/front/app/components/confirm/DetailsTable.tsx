@@ -11,15 +11,22 @@ const TableRow = ({ label, value }: { label: string; value: string }) => (
   </tr>
 );
 
-export default function SummaryTable() {
+export default function DetailsTable() {
   const { getValues } = useFormContext<IFormInput>();
   const values = getValues();
 
   const rows = [
     // biome-ignore lint/style/noNonNullAssertion: バリデーション済みのため
     { label: "予約日", value: format(values.startDateTime!, "yyyy年MM月dd日") },
-    // biome-ignore lint/style/noNonNullAssertion: バリデーション済みのため
-    { label: "予約時刻", value: format(values.startDateTime!, "HH:mm") },
+    {
+      label: "予約時間",
+      // biome-ignore lint/style/noNonNullAssertion: バリデーション済みのため
+      value: `${format(values.startDateTime!, "HH:mm")} - ${format(values.endDateTime!, "HH:mm")}`,
+    },
+    {
+      label: "人数",
+      value: `${values.customer.participants}名`,
+    },
     { label: "金額", value: `${values.totalPrice.toLocaleString()}円` },
     { label: "支払い方法", value: "現地払い" },
   ];

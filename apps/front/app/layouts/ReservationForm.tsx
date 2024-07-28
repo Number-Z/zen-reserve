@@ -3,9 +3,9 @@
 import Button from "@/app/components/common/Button";
 import Calendar from "@/app/components/reserve/Calendar";
 import Customer from "@/app/components/reserve/Customer";
+import Details from "@/app/components/reserve/Details";
 import DiscoveryMethod from "@/app/components/reserve/DiscoveryMethod";
 import Options from "@/app/components/reserve/Options";
-import Summary from "@/app/components/reserve/Summary";
 import Time from "@/app/components/reserve/Time";
 import type { IFormInput } from "@/app/types/IFormInput";
 import type {
@@ -32,7 +32,7 @@ const MemoizedTime = memo(Time);
 const MemoizedOptions = memo(Options);
 const MemoizedCustomer = memo(Customer);
 const MemoizedDiscoveryMethod = memo(DiscoveryMethod);
-const MemoizedSummary = memo(Summary);
+const MemoizedDetails = memo(Details);
 
 export default function ReservationForm({
   serviceName,
@@ -119,7 +119,7 @@ export default function ReservationForm({
         <MemoizedOptions options={options} />
         <MemoizedCustomer />
         <MemoizedDiscoveryMethod discoveryMethods={discoveryMethods} />
-        <MemoizedSummary />
+        <MemoizedDetails />
         <Button type="submit">次へ</Button>
       </div>
     </form>

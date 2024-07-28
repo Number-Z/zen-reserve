@@ -1,8 +1,8 @@
 import CheckValues from "@/app/components/confirm/CheckValues";
 import ConfirmationActions from "@/app/components/confirm/ConfirmationActions";
+import DetailsTable from "@/app/components/confirm/DetailsTable";
 import Notes from "@/app/components/confirm/Notes";
 import OptionsTable from "@/app/components/confirm/OptionsTable";
-import SummaryTable from "@/app/components/confirm/SummaryTable";
 import type { Option, OptionService } from "@prisma/client";
 import { CircleAlert } from "lucide-react";
 
@@ -45,7 +45,7 @@ export default function Confirmation({
         </section>
         <section>
           <h3 className="font-bold">予約詳細</h3>
-          <SummaryTable />
+          <DetailsTable />
         </section>
         <section>
           <h3 className="font-bold">オプション内容</h3>

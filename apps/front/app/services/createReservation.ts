@@ -2,8 +2,10 @@
 
 import { RESERVATION_STATUS } from "@/app/consts/status";
 import { getOptionsServices } from "@/app/services/getOptionsServices";
+import { sendEmail } from "@/app/services/sendEmail";
 import type { IFormInput } from "@/app/types/IFormInput";
 import prisma from "@zen-reserve/database";
+import { format } from "date-fns";
 
 export async function createReservation(values: IFormInput, _: FormData) {
   // サービスを名前で検索
@@ -61,30 +63,90 @@ export async function createReservation(values: IFormInput, _: FormData) {
     discoveryMethodName: methodName,
   }));
 
-  const reservation = await prisma.reservation.create({
-    data: {
-      serviceId: service.serviceId,
+  // const reservation = await prisma.reservation.create({
+  //   data: {
+  //     serviceId: service.serviceId,
+  //     // biome-ignore lint/style/noNonNullAssertion: バリデーション済みのため
+  //     startDateTime: values.startDateTime!,
+  //     // biome-ignore lint/style/noNonNullAssertion: バリデーション済みのため
+  //     endDateTime: values.endDateTime!,
+  //     firstName: values.customer.firstName,
+  //     lastName: values.customer.lastName,
+  //     email: values.customer.email,
+  //     phoneNumber: values.customer.phoneNumber,
+  //     participants: values.customer.participants,
+  //     otherInfo: values.customer.otherInfo,
+  //     status: RESERVATION_STATUS.PENDING,
+  //     totalPrice: totalPrice,
+  //     discount: 0,
+  //     optionReservations: {
+  //       create: optionReservationsData,
+  //     },
+  //     discoveryMethods: {
+  //       create: discoveryMethodsData,
+  //     },
+  //   },
+  // });
+  const reservation = {
+    reservationId: 1,
+  };
+
+  // 予約詳細の配列
+  const reservationDetails = [
+    { label: "予約ID", value: reservation.reservationId.toString() },
+    {
+      label: "予約日",
       // biome-ignore lint/style/noNonNullAssertion: バリデーション済みのため
-      startDateTime: values.startDateTime!,
-      // biome-ignore lint/style/noNonNullAssertion: バリデーション済みのため
-      endDateTime: values.endDateTime!,
-      firstName: values.customer.firstName,
-      lastName: values.customer.lastName,
-      email: values.customer.email,
-      phoneNumber: values.customer.phoneNumber,
-      participants: values.customer.participants,
-      otherInfo: values.customer.otherInfo,
-      status: RESERVATION_STATUS.PENDING,
-      totalPrice: totalPrice,
-      discount: 0,
-      optionReservations: {
-        create: optionReservationsData,
-      },
-      discoveryMethods: {
-        create: discoveryMethodsData,
-      },
+      value: format(values.startDateTime!, "yyyy年MM月dd日"),
     },
+    {
+      label: "予約時間",
+      // biome-ignore lint/style/noNonNullAssertion: バリデーション済みのため
+      value: `${format(values.startDateTime!, "HH:mm")} - ${format(values.endDateTime!, "HH:mm")}`,
+    },
+    { label: "人数", value: `${values.customer.participants}名` },
+    { label: "料金", value: `${totalPrice.toLocaleString()}円` },
+  ];
+
+  // オプションの配列
+  const options = Object.entries(values.options)
+    .map(([key, optionValue]) => {
+      const optionService = optionsServices.find(
+        (opt) => opt.option.name === key,
+      );
+      if (!optionService) {
+        // オプションが見つからない場合はスキップ
+        return null;
+      }
+
+      let displayValue: string;
+      if (typeof optionValue === "boolean") {
+        displayValue = optionValue ? "あり" : "なし";
+      } else if (typeof optionValue === "number") {
+        displayValue = optionValue > 0 ? `${optionValue}個` : "なし";
+      } else {
+        displayValue = "なし";
+      }
+
+      return {
+        label: optionService.option.printName,
+        value: displayValue,
+      };
+    })
+    .filter(
+      (option): option is { label: string; value: string } => option !== null,
+    );
+
+  // その他ご要望を追加
+  options.push({
+    label: "その他ご要望",
+    value: values.customer.otherInfo ?? "なし",
   });
 
-  return reservation.reservationId;
+  await sendEmail({
+    to: values.customer.email,
+    serviceName: values.serviceName,
+    reservationDetails: reservationDetails,
+    options,
+  });
 }

@@ -4,7 +4,7 @@ import type { IFormInput } from "@/app/types/IFormInput";
 import { differenceInHours } from "date-fns";
 import { useFormContext, useWatch } from "react-hook-form";
 
-export default function Summary() {
+export default function Details() {
   const { control } = useFormContext<IFormInput>();
 
   // useWatch を使用して値の変更を監視
