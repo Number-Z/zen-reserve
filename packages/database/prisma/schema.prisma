@@ -43,6 +43,7 @@ model Option {
   printName   String  @default("") @map("print_name") @db.VarChar(100)
   description String? @map("description") @db.Text
   price       Int     @map("price")
+  stock       Int?    @map("stock")
   limit       Int?    @map("limit")
   displayType String  @default("input") @map("display_type") @db.VarChar(20)
 

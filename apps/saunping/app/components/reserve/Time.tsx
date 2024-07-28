@@ -1,5 +1,5 @@
 import { format, set } from "date-fns";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useController, useFormContext } from "react-hook-form";
 
 export default function Time() {
@@ -12,23 +12,22 @@ export default function Time() {
 
   const [totalReservationCount, setTotalReservationCount] = useState(0);
 
-  const fetchReservationsCount = async (selectedDateTime: Date) => {
+  const fetchReservationsCount = useCallback(async (selectedDateTime: Date) => {
     const res = await fetch(
       `/api/reservations?date=${encodeURIComponent(selectedDateTime.toISOString())}`,
       {
-        cache: "no-store",
+        cache: "no-cache",
       },
     );
-    const totalReservationCount = await res.text();
-    setTotalReservationCount(Number.parseInt(totalReservationCount));
-  };
+    const { reservations } = await res.json();
+    setTotalReservationCount(Number.parseInt(reservations));
+  }, []);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: fetchReservationsCount は依存配列に不要
   useEffect(() => {
     if (field.value) {
       fetchReservationsCount(field.value);
     }
-  }, [field.value]);
+  }, [field.value, fetchReservationsCount]);
 
   if (field.value == null) {
     return (
