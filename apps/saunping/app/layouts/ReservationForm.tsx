@@ -106,7 +106,7 @@ export default function ReservationForm({
       <div className="col-span-1 flex justify-center">
         <MemoizedCalendar minDate={minDate} />
       </div>
-      <div className="col-span-1 mx-auto flex max-w-4xl flex-col gap-8 lg:col-span-2">
+      <div className="col-span-1 mx-auto flex w-full max-w-4xl flex-col gap-8 lg:col-span-2">
         <MemoizedTime />
         <MemoizedOptions options={options} />
         <MemoizedCustomer />

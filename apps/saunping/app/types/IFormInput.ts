@@ -17,7 +17,7 @@ export type IFormInput = {
     firstName: string;
     email: string;
     phoneNumber: string;
-    participants: number;
+    adultCount: number;
     otherInfo?: string;
   };
   discoveryMethods: string[];

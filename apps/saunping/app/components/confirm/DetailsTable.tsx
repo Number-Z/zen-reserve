@@ -25,7 +25,7 @@ export default function DetailsTable() {
     },
     {
       label: "人数",
-      value: `${values.customer.participants}名`,
+      value: `${values.customer.adultCount}名`,
     },
     { label: "金額", value: `${values.totalPrice.toLocaleString()}円` },
     { label: "支払い方法", value: "現地払い" },

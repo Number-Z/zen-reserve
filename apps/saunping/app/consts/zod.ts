@@ -58,7 +58,7 @@ export const schema = z.object({
     phoneNumber: z.string().refine(isMobilePhone, {
       message: "正しい電話番号を入力してください",
     }),
-    participants: z
+    adultCount: z
       .number({
         required_error: "数値を入力してください",
       })

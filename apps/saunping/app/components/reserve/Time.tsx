@@ -1,4 +1,4 @@
-import { format, set } from "date-fns";
+import { format, isEqual, set } from "date-fns";
 import { useCallback, useEffect, useState } from "react";
 import { useController, useFormContext } from "react-hook-form";
 
@@ -62,8 +62,7 @@ export default function Time() {
       </div>
       {dateTimes.map((dateTime) => {
         const isDisabled = totalReservationCount >= 3;
-        const isSelected =
-          field.value && field.value.getHours() === dateTime.getHours();
+        const isSelected = field.value && isEqual(field.value, dateTime);
         return (
           <button
             type="button"

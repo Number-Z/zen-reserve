@@ -73,7 +73,7 @@ export async function createReservation(values: IFormInput, _: FormData) {
       lastName: values.customer.lastName,
       email: values.customer.email,
       phoneNumber: values.customer.phoneNumber,
-      participants: values.customer.participants,
+      adultCount: values.customer.adultCount,
       otherInfo: values.customer.otherInfo,
       status: RESERVATION_STATUS.PENDING,
       totalPrice: totalPrice,
@@ -100,7 +100,7 @@ export async function createReservation(values: IFormInput, _: FormData) {
       // biome-ignore lint/style/noNonNullAssertion: バリデーション済みのため
       value: `${format(values.startDateTime!, "HH:mm")} - ${format(values.endDateTime!, "HH:mm")}`,
     },
-    { label: "人数", value: `${values.customer.participants}名` },
+    { label: "人数", value: `${values.customer.adultCount}名` },
     { label: "料金", value: `${totalPrice.toLocaleString()}円` },
   ];
 

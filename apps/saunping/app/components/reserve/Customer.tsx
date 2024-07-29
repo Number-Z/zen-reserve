@@ -73,30 +73,30 @@ export default function Customer() {
         )}
       </div>
       <div>
-        <label htmlFor="participants" className="text-sm">
+        <label htmlFor="adultCount" className="text-sm">
           参加人数
         </label>
         <select
-          {...register("customer.participants", {
+          {...register("customer.adultCount", {
             valueAsNumber: true,
           })}
-          id="participants"
+          id="adultCount"
           className="block w-full rounded-lg border border-gray-200 p-4 text-sm focus:border-blue-500 focus:ring-blue-500 disabled:pointer-events-none disabled:opacity-50"
         >
           <option defaultValue="0">選択してください</option>
           {Array.from({ length: 12 }, (_, i) => (
             <option
               // biome-ignore lint/suspicious/noArrayIndexKey: 他に値が存在しないため
-              key={`participants-${i}`}
+              key={`adultCount-${i}`}
               value={i + 1}
             >
               {i + 1}
             </option>
           ))}
         </select>
-        {errors.customer?.participants && (
+        {errors.customer?.adultCount && (
           <p className="text-red-500 text-sm">
-            {errors.customer.participants?.message}
+            {errors.customer.adultCount?.message}
           </p>
         )}
       </div>
