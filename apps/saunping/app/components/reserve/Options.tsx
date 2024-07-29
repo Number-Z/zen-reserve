@@ -11,29 +11,63 @@ type OptionsProps = {
 export default function Options({ options }: OptionsProps) {
   const { register } = useFormContext();
 
-  const [optionCount, setOptionCount] = useState<
-    { optionId: number; count: number }[]
-  >([]);
-
   const startDateTime = useWatch({
     name: "startDateTime",
   });
 
+  const [optionCount, setOptionCount] = useState<
+    { optionId: number; name: string; count: number }[]
+  >([]);
+  const [reservationCount, setReservationCount] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
+
   useEffect(() => {
     if (!startDateTime) return;
-    const fetchOptionsCount = async () => {
-      const res = await fetch(
-        `/api/options?date=${encodeURIComponent(startDateTime.toISOString())}`,
-        {
-          cache: "no-cache",
-        },
-      );
-      const { options } = await res.json();
-      setOptionCount(options);
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        setHasError(false);
+
+        const optionsRes = await fetch(
+          `/api/options?date=${encodeURIComponent(startDateTime.toISOString())}`,
+          {
+            cache: "no-cache",
+          },
+        );
+        const reservationsRes = await fetch(
+          `/api/reservations?date=${encodeURIComponent(
+            startDateTime.toISOString(),
+          )}`,
+          { cache: "no-cache" },
+        );
+        if (!optionsRes.ok || !reservationsRes.ok) {
+          throw new Error("Failed to fetch data");
+        }
+
+        const { options } = await optionsRes.json();
+        const { reservations } = await reservationsRes.json();
+
+        setOptionCount(options);
+        setReservationCount(Number.parseInt(reservations));
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setHasError(true);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    fetchOptionsCount();
+    fetchData();
   }, [startDateTime]);
+
+  const getAvailableCount = () => {
+    const maxCapacity = 3;
+    const saunaCount =
+      optionCount.find((option) => option.name === "sauna")?.count ?? 0;
+    const availableCount = maxCapacity - reservationCount - saunaCount;
+    return Math.max(availableCount, 0);
+  };
 
   const getAvailableOptions = useCallback(
     (optionId: number, stock: number | null, limit: number | null) => {
@@ -59,6 +93,14 @@ export default function Options({ options }: OptionsProps) {
           option.option.limit,
         );
 
+        const unavailable = availableOptions === 0;
+        const isDisabled =
+          startDateTime == null ||
+          unavailable ||
+          isLoading ||
+          hasError ||
+          getAvailableCount() === 0;
+
         return (
           <div key={option.optionId} className="w-full">
             {option.option.displayType === "select" ? (
@@ -69,33 +111,40 @@ export default function Options({ options }: OptionsProps) {
                     +{option.option.price.toLocaleString()}円
                   </span>
                 </label>
-                <select
-                  {...register(`options.${option.option.name}`, {
-                    valueAsNumber: true,
-                  })}
-                  id={option.option.name}
-                  className="block w-full rounded-lg border border-gray-200 p-4 text-sm focus:border-blue-500 focus:ring-blue-500 disabled:pointer-events-none disabled:opacity-50"
-                >
-                  <option value="0">0</option>
-                  {Array.from({ length: availableOptions }, (_, i) => (
-                    <option key={`${option.optionId}-${i}`} value={i + 1}>
-                      {i + 1}
-                    </option>
-                  ))}
-                </select>
+                {unavailable ? (
+                  <div className="block w-full rounded-lg border border-gray-200 bg-gray-100 p-4 text-red-500 text-sm">
+                    在庫なし
+                  </div>
+                ) : (
+                  <select
+                    {...register(`options.${option.option.name}`, {
+                      valueAsNumber: true,
+                    })}
+                    id={option.option.name}
+                    className="block w-full rounded-lg border border-gray-200 p-4 text-sm focus:border-blue-500 focus:ring-blue-500 disabled:pointer-events-none disabled:opacity-50"
+                    disabled={isDisabled}
+                  >
+                    <option value="0">0</option>
+                    {Array.from({ length: availableOptions }, (_, i) => (
+                      <option key={`${option.optionId}-${i}`} value={i + 1}>
+                        {i + 1}
+                      </option>
+                    ))}
+                  </select>
+                )}
               </>
-            ) : option.option.displayType === "checkbox" ? (
+            ) : option.option.displayType === "toggle" ? (
               <>
                 <label
                   htmlFor={option.option.name}
-                  className="inline-flex cursor-pointer items-center"
+                  className={`inline-flex items-center ${isDisabled ? "pointer-events-none opacity-50" : "cursor-pointer"}`}
                 >
                   <input
                     id={option.option.name}
                     type="checkbox"
                     {...register(`options.${option.option.name}`)}
                     className="peer sr-only"
-                    disabled={availableOptions === 0}
+                    disabled={isDisabled}
                   />
                   <div className="peer rtl:peer-checked:after:-translate-x-full relative h-6 w-11 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300" />
                   <span className="ms-3 font-medium text-gray-900 text-sm">
@@ -105,6 +154,9 @@ export default function Options({ options }: OptionsProps) {
                 <span className="float-right text-sm">
                   +{option.option.price.toLocaleString()}円
                 </span>
+                {unavailable && (
+                  <p className="mt-2 text-red-500 text-sm">在庫なし</p>
+                )}
               </>
             ) : (
               <></>
