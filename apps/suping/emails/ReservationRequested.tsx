@@ -65,6 +65,19 @@ export default function ReservationRequested({
               また、自己都合による前日、当日キャンセルに関しましては、キャンセル料として100%お支払いになりますのであらかじめご了承ください（人数変更等は可能です）。
               <br />
               ※雨天の場合、前日にお電話もしくはショートメッセージにてご連絡いたします。
+              <br />
+              <br />
+              ※必ず一読ください。
+              <br />
+              ツアー開始15分前には現地集合をお願いお願いいたします。
+              <br />
+              集合場所（Googleマップ）
+              <br />
+              https://www.google.com/maps?ll=33.570017,133.322614&z=17&t=h&hl=ja&gl=JP&mapclient=embed&q=33%C2%B034%2714.1%22N+133%C2%B019%2725.1%22E+33.570583,+133.323639@33.5705833,133.3236389
+              <br />
+              <br />
+              現地にはトイレがございませんので、水辺の駅
+              あいの里であらかじめお済ませいただくことをお勧めいたします。
             </Text>
             <h2 className="font-bold text-gray-700 text-lg">予約詳細</h2>
             <table className="mb-5 w-full border-collapse">
@@ -77,13 +90,6 @@ export default function ReservationRequested({
               {options.map(({ label, value }) => renderTableRow(label, value))}
             </table>
             <Hr className="my-10 border-gray-300" />
-            <Text className="text-gray-500 text-sm">
-              {SERVICE_NAME}事務所
-              <br />
-              高知県高知市内寿町7-10
-              <br />
-              高知駅から車で約5分
-            </Text>
           </Container>
         </Body>
       </Tailwind>
