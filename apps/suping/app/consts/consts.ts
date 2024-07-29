@@ -1,4 +1,6 @@
 export const SERVICE_NAME = process.env.SERVICE_NAME || "";
+export const NEXT_PUBLIC_SERVICE_NAME =
+  process.env.NEXT_PUBLIC_SERVICE_NAME || "";
 export const SMTP_FROM_EMAIL = process.env.SMTP_FROM_EMAIL || "";
 export const SMTP_HOST = process.env.SMTP_HOST || "";
 export const SMTP_PASSWORD = process.env.SMTP_PASSWORD || "";

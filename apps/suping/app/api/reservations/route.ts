@@ -1,4 +1,3 @@
-import { SERVICE_NAME } from "@/app/consts/consts";
 import prisma from "@zen-reserve/database";
 import { endOfDay, parseISO, startOfDay } from "date-fns";
 import { type NextRequest, NextResponse } from "next/server";
@@ -6,9 +5,14 @@ import { type NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
   const dateString = req.nextUrl.searchParams.get("date");
   if (!dateString) {
-    return new NextResponse("Date is required", { status: 400 });
+    return new NextResponse("date is required", { status: 400 });
   }
   const date = parseISO(dateString);
+
+  const serviceName = req.nextUrl.searchParams.get("serviceName");
+  if (!serviceName) {
+    return new NextResponse("serviceName is required", { status: 400 });
+  }
 
   const reservations = await prisma.reservation.findMany({
     where: {
@@ -17,11 +21,8 @@ export async function GET(req: NextRequest) {
         lte: endOfDay(date),
       },
       service: {
-        name: SERVICE_NAME,
+        name: serviceName,
       },
-    },
-    include: {
-      service: true,
     },
   });
 

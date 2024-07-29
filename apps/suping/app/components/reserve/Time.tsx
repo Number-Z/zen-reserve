@@ -1,3 +1,4 @@
+import { NEXT_PUBLIC_SERVICE_NAME } from "@/app/consts/consts";
 import { addHours, format, isEqual, set } from "date-fns";
 import { useCallback, useEffect, useState } from "react";
 import { useController, useFormContext } from "react-hook-form";
@@ -19,7 +20,9 @@ export default function Time() {
     setHasError(false);
     try {
       const res = await fetch(
-        `/api/reservations?date=${encodeURIComponent(selectedDateTime.toISOString())}`,
+        `/api/reservations?date=${encodeURIComponent(
+          selectedDateTime.toISOString(),
+        )}&serviceName=${NEXT_PUBLIC_SERVICE_NAME}`,
         {
           cache: "no-cache",
         },
