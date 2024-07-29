@@ -11,16 +11,30 @@ export default function Time() {
   });
 
   const [totalReservationCount, setTotalReservationCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
 
   const fetchReservationsCount = useCallback(async (selectedDateTime: Date) => {
-    const res = await fetch(
-      `/api/reservations?date=${encodeURIComponent(selectedDateTime.toISOString())}`,
-      {
-        cache: "no-cache",
-      },
-    );
-    const { reservations } = await res.json();
-    setTotalReservationCount(Number.parseInt(reservations));
+    setIsLoading(true);
+    setHasError(false);
+    try {
+      const res = await fetch(
+        `/api/reservations?date=${encodeURIComponent(selectedDateTime.toISOString())}`,
+        {
+          cache: "no-cache",
+        },
+      );
+      if (!res.ok) {
+        throw new Error("Failed to fetch reservations");
+      }
+      const { reservations } = await res.json();
+      setTotalReservationCount(Number.parseInt(reservations));
+    } catch (error) {
+      console.error("Error fetching reservations:", error);
+      setHasError(true);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -44,7 +58,9 @@ export default function Time() {
     set(field.value, { hours: hour, minutes: 0, seconds: 0, milliseconds: 0 }),
   );
 
-  const getReservationStatus = (totalReservationCount: number) => {
+  const getReservationStatus = () => {
+    if (isLoading) return <span className="text-2xl text-gray-400">-</span>;
+    if (hasError) return <span className="text-2xl text-yellow-500">!</span>;
     if (totalReservationCount === 0)
       return <span className="text-2xl text-red-500">◎</span>;
     if (totalReservationCount === 1)
@@ -61,7 +77,7 @@ export default function Time() {
         <div className="col-span-2">空き状況</div>
       </div>
       {dateTimes.map((dateTime) => {
-        const isDisabled = totalReservationCount >= 3;
+        const isDisabled = isLoading || hasError || totalReservationCount >= 3;
         const isSelected = field.value && isEqual(field.value, dateTime);
         return (
           <button
@@ -75,7 +91,7 @@ export default function Time() {
               {format(dateTime, "HH:mm")}
             </div>
             <div className="col-span-2 flex h-full items-center justify-center">
-              {getReservationStatus(totalReservationCount)}
+              {getReservationStatus()}
             </div>
           </button>
         );

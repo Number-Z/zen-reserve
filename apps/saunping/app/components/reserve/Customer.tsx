@@ -83,13 +83,9 @@ export default function Customer() {
           id="adultCount"
           className="block w-full rounded-lg border border-gray-200 p-4 text-sm focus:border-blue-500 focus:ring-blue-500 disabled:pointer-events-none disabled:opacity-50"
         >
-          <option defaultValue="0">選択してください</option>
-          {Array.from({ length: 12 }, (_, i) => (
-            <option
-              // biome-ignore lint/suspicious/noArrayIndexKey: 他に値が存在しないため
-              key={`adultCount-${i}`}
-              value={i + 1}
-            >
+          <option value="1">1</option>
+          {Array.from({ length: 10 }, (_, i) => (
+            <option key={`adultCount-${i + 1}`} value={i + 1}>
               {i + 1}
             </option>
           ))}

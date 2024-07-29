@@ -66,7 +66,7 @@ export default function Options({ options }: OptionsProps) {
                 <label htmlFor={option.option.name}>
                   <span className="text-sm">{option.option.printName}</span>
                   <span className="float-right text-sm">
-                    +{option.option.price}
+                    +{option.option.price.toLocaleString()}円
                   </span>
                 </label>
                 <select
@@ -103,7 +103,7 @@ export default function Options({ options }: OptionsProps) {
                   </span>
                 </label>
                 <span className="float-right text-sm">
-                  +{option.option.price}
+                  +{option.option.price.toLocaleString()}円
                 </span>
               </>
             ) : (

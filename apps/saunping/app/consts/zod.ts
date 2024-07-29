@@ -64,6 +64,7 @@ export const schema = z.object({
       })
       .int("整数を入力してください")
       .positive("1人以上で予約してください"),
+    childCount: z.number().int().nonnegative(),
     otherInfo: z.string().optional(),
   }),
   discoveryMethods: z.array(z.string()),
