@@ -15,15 +15,11 @@ export default function FormProvider({
       startDateTime: undefined,
       endDateTime: undefined,
       options: {
-        tentSetup: false,
-        firewood: false,
-        saunaOil: false,
+        sauna: false,
         bbqSet: false,
-        additionalChairs: 0,
         swimWears: 0,
         bathTowels: 0,
         crocses: 0,
-        saunaHats: 0,
       },
       customer: {
         lastName: "",

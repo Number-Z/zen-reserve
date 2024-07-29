@@ -11,17 +11,8 @@ export const schema = z.object({
     .min(minDate, "その日時はもう予約できません"),
   endDateTime: z.date(),
   options: z.object({
-    tentSetup: z.boolean(),
-    firewood: z.boolean(),
-    saunaOil: z.boolean(),
+    sauna: z.boolean(),
     bbqSet: z.boolean(),
-    additionalChairs: z
-      .number({
-        required_error: "数値を入力してください",
-      })
-      .int("整数を入力してください")
-      .nonnegative("0以上の数を選択してください")
-      .max(12, "12以下の数を選択してください"),
     swimWears: z
       .number({
         required_error: "数値を入力してください",
@@ -37,13 +28,6 @@ export const schema = z.object({
       .nonnegative("0以上の数を選択してください")
       .max(12, "12以下の数を選択してください"),
     crocses: z
-      .number({
-        required_error: "数値を入力してください",
-      })
-      .int("整数を入力してください")
-      .nonnegative("0以上の数を選択してください")
-      .max(12, "12以下の数を選択してください"),
-    saunaHats: z
       .number({
         required_error: "数値を入力してください",
       })

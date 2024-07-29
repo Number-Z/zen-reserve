@@ -39,7 +39,6 @@ export default function Options({ options }: OptionsProps) {
           `/api/reservations?date=${encodeURIComponent(startDateTime.toISOString())}&serviceName=SAUNPING`,
           { cache: "no-cache" },
         );
-
         if (!optionsRes.ok || !reservationsRes.ok) {
           throw new Error("Failed to fetch data");
         }

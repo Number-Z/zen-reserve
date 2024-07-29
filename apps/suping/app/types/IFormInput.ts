@@ -2,15 +2,11 @@ export type IFormInput = {
   startDateTime?: Date;
   endDateTime?: Date;
   options: {
-    tentSetup: boolean;
-    firewood: boolean;
-    saunaOil: boolean;
+    sauna: boolean;
     bbqSet: boolean;
-    additionalChairs: number;
     swimWears: number;
     bathTowels: number;
     crocses: number;
-    saunaHats: number;
   };
   customer: {
     lastName: string;

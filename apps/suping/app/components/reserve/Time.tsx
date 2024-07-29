@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useController, useFormContext } from "react-hook-form";
 
 export default function Time() {
-  const { control, setValue } = useFormContext();
+  const { control, setValue, resetField } = useFormContext();
 
   const { field: startDateTime } = useController({
     name: "startDateTime",
@@ -74,6 +74,7 @@ export default function Time() {
   };
 
   const handleClick = (dateTime: Date) => {
+    resetField("options");
     startDateTime.onChange(dateTime);
     setValue("endDateTime", addHours(dateTime, 2));
   };
