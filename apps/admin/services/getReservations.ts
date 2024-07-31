@@ -1,23 +1,25 @@
 "use server";
 
+import type { RESERVATION_STATUS } from "@/consts/status";
 import prisma from "@zen-reserve/database";
 
-export default async function getReservations(
-  params: {
-    take?: number;
-    skip?: number;
-  } = {},
-) {
-  const { take, skip } = params;
+type GetReservationsParams = {
+  statuses: (keyof typeof RESERVATION_STATUS)[];
+};
+
+export default async function getReservations({
+  statuses,
+}: GetReservationsParams) {
   const reservations = await prisma.reservation.findMany({
     orderBy: {
       reservationId: "desc",
     },
+    where: {
+      OR: statuses.map((status) => ({ status })),
+    },
     include: {
       service: true,
     },
-    take,
-    skip,
   });
   return reservations;
 }

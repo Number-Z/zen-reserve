@@ -1,6 +1,7 @@
 import { SERVICE_NAME } from "@/app/consts/consts";
 import prisma from "@zen-reserve/database";
 import { endOfDay, parseISO, startOfDay } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 import { type NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -8,7 +9,7 @@ export async function GET(req: NextRequest) {
   if (!dateString) {
     return new NextResponse("date is required", { status: 400 });
   }
-  const date = parseISO(dateString);
+  const date = toZonedTime(parseISO(dateString), "Asia/Tokyo");
 
   const reservations = await prisma.reservation.findMany({
     where: {
