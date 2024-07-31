@@ -3,6 +3,9 @@ import { DataTable } from "@/components/data-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import getReservations from "@/services/getReservations";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function Page() {
   const reservations = await getReservations();
 

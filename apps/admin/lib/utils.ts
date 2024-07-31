@@ -7,9 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 // ステータスを文字列に変換する関数
-export const getStatusString = (
-  status: typeof RESERVATION_STATUS | keyof typeof RESERVATION_STATUS,
-) => {
+export const getStatusString = (status: keyof typeof RESERVATION_STATUS) => {
   switch (status) {
     case RESERVATION_STATUS.PENDING:
       return "仮予約";
