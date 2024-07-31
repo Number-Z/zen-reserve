@@ -1,18 +1,11 @@
 import NavBar from "@/app/components/common/NavBar";
 import Confirmation from "@/app/layouts/Confirmation";
 import { getOptionsServices } from "@/app/services/getOptionsServices";
-import { getService } from "@/app/services/getService";
-import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function Page() {
-  const service = await getService();
-  if (!service) {
-    redirect("/");
-  }
-
   const options = await getOptionsServices();
 
   return (
