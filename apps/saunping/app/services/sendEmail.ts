@@ -1,6 +1,7 @@
 "use server";
 
 import { SERVICE_NAME } from "@/app/consts/consts";
+import ReservationRequestNotification from "@/emails/ReservationRequestNotification";
 import ReservationRequested from "@/emails/ReservationRequested";
 import { render } from "@react-email/components";
 import nodemailer from "nodemailer";
@@ -49,6 +50,23 @@ export async function sendEmail({
     subject: `予約リクエスト完了 - ${SERVICE_NAME}`,
     html: render(
       createElement(ReservationRequested, {
+        reservationDetails,
+        options,
+      }),
+    ),
+  });
+}
+
+export async function sendEmailForAdmin({
+  to,
+  reservationDetails,
+  options,
+}: SendEmailParams) {
+  await sendMail({
+    to,
+    subject: `予約リクエスト通知 - ${SERVICE_NAME}`,
+    html: render(
+      createElement(ReservationRequestNotification, {
         reservationDetails,
         options,
       }),

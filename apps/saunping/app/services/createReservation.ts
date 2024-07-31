@@ -1,9 +1,9 @@
 "use server";
 
-import { SERVICE_NAME } from "@/app/consts/consts";
+import { ADMIN_EMAIL, SERVICE_NAME } from "@/app/consts/consts";
 import { RESERVATION_STATUS } from "@/app/consts/status";
 import { getOptionsServices } from "@/app/services/getOptionsServices";
-import { sendEmail } from "@/app/services/sendEmail";
+import { sendEmail, sendEmailForAdmin } from "@/app/services/sendEmail";
 import type { IFormInput } from "@/app/types/IFormInput";
 import prisma from "@zen-reserve/database";
 import { format } from "date-fns";
@@ -141,6 +141,12 @@ export async function createReservation(values: IFormInput, _: FormData) {
 
   await sendEmail({
     to: values.customer.email,
+    reservationDetails: reservationDetails,
+    options,
+  });
+
+  await sendEmailForAdmin({
+    to: ADMIN_EMAIL,
     reservationDetails: reservationDetails,
     options,
   });
