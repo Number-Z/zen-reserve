@@ -1,5 +1,5 @@
 import prisma from "@zen-reserve/database";
-import { endOfDay, parseISO, startOfDay } from "date-fns";
+import { endOfDay, parseISO, startOfDay, subHours } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
 import { type NextRequest, NextResponse } from "next/server";
 
@@ -8,7 +8,17 @@ export async function GET(req: NextRequest) {
   if (!dateString) {
     return new NextResponse("date is required", { status: 400 });
   }
-  const date = toZonedTime(parseISO(dateString), "Asia/Tokyo");
+
+  // UTC->JST
+  const jstDate = toZonedTime(parseISO(dateString), "Asia/Tokyo");
+
+  // JST基準で計算
+  const jstStartOfDay = startOfDay(jstDate);
+  const jstEndOfDay = endOfDay(jstDate);
+
+  // JST->UTC
+  const utcStartOfDay = subHours(jstStartOfDay, 9);
+  const utcEndOfDay = subHours(jstEndOfDay, 9);
 
   const options = await prisma.option.findMany({
     select: {
@@ -18,8 +28,8 @@ export async function GET(req: NextRequest) {
         where: {
           reservation: {
             startDateTime: {
-              gte: startOfDay(date),
-              lte: endOfDay(date),
+              gte: utcStartOfDay,
+              lte: utcEndOfDay,
             },
           },
         },
