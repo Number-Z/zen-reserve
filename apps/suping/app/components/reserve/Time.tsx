@@ -24,7 +24,7 @@ export default function Time() {
           selectedDateTime.toISOString(),
         )}&serviceName=${NEXT_PUBLIC_SERVICE_NAME}`,
         {
-          cache: "no-cache",
+          cache: "no-store",
         },
       );
       if (!res.ok) {

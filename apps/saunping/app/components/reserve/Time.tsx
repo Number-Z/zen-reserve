@@ -28,12 +28,12 @@ export default function Time() {
 
         const optionsRes = await fetch(
           `/api/options?date=${encodeURIComponent(startDateTime.value.toISOString())}`,
-          { cache: "no-cache" },
+          { cache: "no-store" },
         );
         const reservationsRes = await fetch(
           `/api/reservations?date=${encodeURIComponent(startDateTime.value.toISOString())}`,
           {
-            cache: "no-cache",
+            cache: "no-store",
           },
         );
         if (!optionsRes.ok || !reservationsRes.ok) {
@@ -41,6 +41,7 @@ export default function Time() {
         }
         const { options } = await optionsRes.json();
         const { reservations } = await reservationsRes.json();
+        console.log(reservations);
 
         setOptionCount(options);
         setTotalReservationCount(Number.parseInt(reservations));
