@@ -30,7 +30,7 @@ export default function FormProvider({
         firstName: "",
         email: "",
         phoneNumber: "",
-        adultCount: 0,
+        adultCount: 1,
         childCount: 0,
       },
       discoveryMethods: [],

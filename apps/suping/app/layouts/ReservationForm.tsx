@@ -6,6 +6,7 @@ import Customer from "@/app/components/reserve/Customer";
 import Details from "@/app/components/reserve/Details";
 import DiscoveryMethod from "@/app/components/reserve/DiscoveryMethod";
 import Options from "@/app/components/reserve/Options";
+import Participants from "@/app/components/reserve/Participants";
 import Time from "@/app/components/reserve/Time";
 import type { IFormInput } from "@/app/types/IFormInput";
 import type {
@@ -27,6 +28,7 @@ type ReservationFormProps = {
 
 const MemoizedCalendar = memo(Calendar);
 const MemoizedTime = memo(Time);
+const MemoizedParticipants = memo(Participants);
 const MemoizedOptions = memo(Options);
 const MemoizedCustomer = memo(Customer);
 const MemoizedDiscoveryMethod = memo(DiscoveryMethod);
@@ -116,6 +118,7 @@ export default function ReservationForm({
       </div>
       <div className="col-span-1 mx-auto flex w-full max-w-4xl flex-col gap-8 lg:col-span-2">
         <MemoizedTime />
+        <MemoizedParticipants />
         <MemoizedOptions options={options} />
         <MemoizedCustomer />
         <MemoizedDiscoveryMethod discoveryMethods={discoveryMethods} />
