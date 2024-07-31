@@ -27,6 +27,9 @@ export async function GET(req: NextRequest) {
   const utcEndOfDay = subHours(jstEndOfDay, 9);
 
   const reservations = await prisma.reservation.findMany({
+    select: {
+      startDateTime: true,
+    },
     where: {
       startDateTime: {
         gte: utcStartOfDay,
@@ -41,5 +44,5 @@ export async function GET(req: NextRequest) {
     },
   });
 
-  return NextResponse.json({ reservations: reservations.length.toString() });
+  return NextResponse.json({ reservations });
 }

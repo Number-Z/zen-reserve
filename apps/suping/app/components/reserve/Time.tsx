@@ -11,7 +11,9 @@ export default function Time() {
     control,
   });
 
-  const [totalReservationCount, setTotalReservationCount] = useState(0);
+  const [reservations, setReservations] = useState<{ startDateTime: Date }[]>(
+    [],
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
@@ -31,7 +33,7 @@ export default function Time() {
         throw new Error("Failed to fetch reservations");
       }
       const { reservations } = await res.json();
-      setTotalReservationCount(Number.parseInt(reservations));
+      setReservations(reservations);
     } catch (error) {
       console.error("Error fetching reservations:", error);
       setHasError(true);
@@ -65,12 +67,14 @@ export default function Time() {
     set(startDateTime.value, { ...time, seconds: 0, milliseconds: 0 }),
   );
 
-  const getReservationStatus = () => {
+  const getReservationStatus = (dateTime: Date) => {
     if (isLoading) return <span className="text-2xl text-gray-400">-</span>;
     if (hasError) return <span className="text-2xl text-yellow-500">!</span>;
-    if (totalReservationCount === 0)
-      return <span className="text-2xl text-red-500">◎</span>;
-    return <span className="cursor-none text-2xl">×</span>;
+    const isReserved = reservations.some((reservation) =>
+      isEqual(new Date(reservation.startDateTime), dateTime),
+    );
+    if (isReserved) return <span className="text-2xl">×</span>;
+    return <span className="text-2xl text-red-500">◎</span>;
   };
 
   const handleClick = (dateTime: Date) => {
@@ -86,14 +90,19 @@ export default function Time() {
         <div className="col-span-2">空き状況</div>
       </div>
       {dateTimes.map((dateTime) => {
-        const isDisabled = isLoading || hasError || totalReservationCount >= 1;
+        const isReserved = reservations.some((reservation) =>
+          isEqual(new Date(reservation.startDateTime), dateTime),
+        );
+        const isDisabled = isLoading || hasError || isReserved;
         const isSelected =
           startDateTime.value && isEqual(startDateTime.value, dateTime);
         return (
           <button
             type="button"
             key={dateTime.toISOString()}
-            className={`grid w-full grid-cols-3 border-b-2 px-4 py-4 text-center text-base ${isSelected ? "bg-[#2C2C2C] text-white" : ""}${isDisabled ? "opacity-50" : ""}`}
+            className={`grid w-full grid-cols-3 border-b-2 px-4 py-4 text-center text-base ${
+              isSelected ? "bg-[#2C2C2C] text-white" : ""
+            }${isDisabled ? " opacity-50" : ""}`}
             onClick={() => handleClick(dateTime)}
             disabled={isDisabled}
           >
@@ -101,7 +110,7 @@ export default function Time() {
               {format(dateTime, "HH:mm")}
             </div>
             <div className="col-span-2 flex h-full items-center justify-center">
-              {getReservationStatus()}
+              {getReservationStatus(dateTime)}
             </div>
           </button>
         );
