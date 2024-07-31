@@ -1,6 +1,5 @@
 "use client";
 
-import Loading from "@/components/loading";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -23,6 +22,7 @@ import { Input } from "@/components/ui/input";
 import { authenticate } from "@/lib/actions";
 import { type SignInSchemaType, signInSchema } from "@/schemas/signIn";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 
 export default function LoginForm() {
@@ -34,6 +34,7 @@ export default function LoginForm() {
       password: "",
     },
   });
+  const { isSubmitting, isValid } = form.formState;
 
   const handleSubmit = form.handleSubmit(async (data) => {
     await authenticate(data);
@@ -82,11 +83,15 @@ export default function LoginForm() {
             <Button variant="outline" type="reset" onClick={() => form.reset()}>
               リセット
             </Button>
-            <Button
-              type="submit"
-              disabled={form.formState.isSubmitting || !form.formState.isValid}
-            >
-              {form.formState.isSubmitting ? <Loading /> : "ログイン"}
+            <Button type="submit" disabled={isSubmitting || !isValid}>
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ログイン中...
+                </>
+              ) : (
+                "ログイン"
+              )}
             </Button>
           </CardFooter>
         </form>

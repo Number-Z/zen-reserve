@@ -1,6 +1,6 @@
 "use server";
 
-import type { RESERVATION_STATUS } from "@/consts/status";
+import { RESERVATION_STATUS } from "@/consts/status";
 import type { ReservationSchemaType } from "@/schemas/reservation";
 import getOptionsServices from "@/services/getOptionsServices";
 import { sendEmail } from "@/services/sendEmail";
@@ -10,8 +10,10 @@ import { redirect } from "next/navigation";
 
 function shouldSendEmail(currentStatus: string, updatedStatus: string) {
   return (
-    (currentStatus === "PENDING" && updatedStatus === "CONFIRMED") ||
-    updatedStatus === "CANCELED"
+    (currentStatus === RESERVATION_STATUS.PENDING &&
+      updatedStatus === RESERVATION_STATUS.CONFIRMED) ||
+    (currentStatus !== RESERVATION_STATUS.CANCELED &&
+      updatedStatus === RESERVATION_STATUS.CANCELED)
   );
 }
 

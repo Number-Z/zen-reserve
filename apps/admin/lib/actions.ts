@@ -3,11 +3,10 @@
 import { signIn, signOut } from "@/auth";
 import type { SignInSchemaType } from "@/schemas/signIn";
 import { AuthError } from "next-auth";
-import { redirect } from "next/navigation";
 
 export async function authenticate(data: SignInSchemaType) {
   try {
-    await signIn("credentials", data);
+    await signIn("credentials", { redirectTo: "/dashboard", ...data });
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
@@ -21,7 +20,6 @@ export async function authenticate(data: SignInSchemaType) {
   }
 }
 
-export async function logout() {
-  await signOut();
-  redirect("/login");
+export async function logOut() {
+  await signOut({ redirectTo: "/" });
 }

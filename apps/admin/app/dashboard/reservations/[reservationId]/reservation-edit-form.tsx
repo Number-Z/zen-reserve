@@ -14,6 +14,8 @@ import type { OptionsType } from "@/services/getOptionsServices";
 import type { ReservationType } from "@/services/getReservationById";
 import { updateReservation } from "@/services/updateReservation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
 type ReservationEditFormProps = {
@@ -27,6 +29,8 @@ export default function ReservationEditForm({
   discoveryMethods,
   options,
 }: ReservationEditFormProps) {
+  const router = useRouter();
+
   const defaultOptions = options.reduce(
     (acc, option) => {
       const optionReservation = reservation.optionReservations.find(
@@ -64,6 +68,7 @@ export default function ReservationEditForm({
       options: defaultOptions,
     },
   });
+  const { isSubmitting, isValid } = form.formState;
 
   const handleSubmit = form.handleSubmit(async (data) => {
     await updateReservation(data);
@@ -78,7 +83,27 @@ export default function ReservationEditForm({
           discoveryMethods={discoveryMethods}
         />
         <Options options={options} />
-        <Button type="submit">更新</Button>
+        <div className="flex justify-end">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              router.back();
+            }}
+          >
+            戻る
+          </Button>
+          <Button type="submit" disabled={isSubmitting || !isValid}>
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                更新中...
+              </>
+            ) : (
+              "更新"
+            )}
+          </Button>
+        </div>
       </form>
     </Form>
   );

@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { logOut } from "@/lib/actions";
 import { cn } from "@/lib/utils";
 
 export function Nav({
@@ -23,12 +24,14 @@ export function Nav({
       >
         予約一覧
       </Link>
-      <Link
-        href="/logout"
-        className="font-medium text-muted-foreground text-sm transition-colors hover:text-primary"
-      >
-        ログアウト
-      </Link>
+      <form action={logOut}>
+        <button
+          type="submit"
+          className="font-medium text-muted-foreground text-sm transition-colors hover:text-primary"
+        >
+          ログアウト
+        </button>
+      </form>
     </nav>
   );
 }
