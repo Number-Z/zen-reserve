@@ -12,6 +12,7 @@ import {
 } from "@react-email/components";
 
 type CompleteProps = {
+  customer: { label: string; value: string }[];
   reservationDetails: { label: string; value: string }[];
   options: { label: string; value: string }[];
 };
@@ -30,6 +31,7 @@ const renderTableRow = (label: string, value: string) => (
 );
 
 export default function ReservationRequested({
+  customer,
   reservationDetails,
   options,
 }: CompleteProps) {
@@ -79,6 +81,10 @@ export default function ReservationRequested({
               現地にはトイレがございませんので、水辺の駅
               あいの里であらかじめお済ませいただくことをお勧めいたします。
             </Text>
+            <h2 className="font-bold text-gray-700 text-lg">予約者情報</h2>
+            <table className="mb-5 w-full border-collapse">
+              {customer.map(({ label, value }) => renderTableRow(label, value))}
+            </table>
             <h2 className="font-bold text-gray-700 text-lg">予約詳細</h2>
             <table className="mb-5 w-full border-collapse">
               {reservationDetails.map(({ label, value }) =>

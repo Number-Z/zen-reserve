@@ -36,12 +36,14 @@ export const sendMail = async (data: EmailPayload) => {
 
 type SendEmailParams = {
   to: string;
+  customer: { label: string; value: string }[];
   reservationDetails: { label: string; value: string }[];
   options: { label: string; value: string }[];
 };
 
 export async function sendEmail({
   to,
+  customer,
   reservationDetails,
   options,
 }: SendEmailParams) {
@@ -50,6 +52,7 @@ export async function sendEmail({
     subject: `予約リクエスト完了 - ${SERVICE_NAME}`,
     html: render(
       createElement(ReservationRequested, {
+        customer,
         reservationDetails,
         options,
       }),
@@ -59,6 +62,7 @@ export async function sendEmail({
 
 export async function sendEmailForAdmin({
   to,
+  customer,
   reservationDetails,
   options,
 }: SendEmailParams) {
@@ -67,6 +71,7 @@ export async function sendEmailForAdmin({
     subject: `予約リクエスト通知 - ${SERVICE_NAME}`,
     html: render(
       createElement(ReservationRequestNotification, {
+        customer,
         reservationDetails,
         options,
       }),

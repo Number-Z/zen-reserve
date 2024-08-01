@@ -7,6 +7,7 @@ import { sendEmail, sendEmailForAdmin } from "@/app/services/sendEmail";
 import type { IFormInput } from "@/app/types/IFormInput";
 import prisma from "@zen-reserve/database";
 import { format } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 
 export async function createReservation(values: IFormInput, _: FormData) {
   // サービスを名前で検索
@@ -90,18 +91,29 @@ export async function createReservation(values: IFormInput, _: FormData) {
     },
   });
 
+  // 予約者情報の配列
+  const customer = [
+    { label: "姓", value: values.customer.lastName },
+    { label: "名", value: values.customer.firstName },
+    { label: "メールアドレス", value: values.customer.email },
+    { label: "電話番号", value: values.customer.phoneNumber },
+  ];
+
   // 予約詳細の配列
   const reservationDetails = [
     { label: "予約ID", value: reservation.reservationId.toString() },
     {
       label: "予約日",
-      // biome-ignore lint/style/noNonNullAssertion: バリデーション済みのため
-      value: format(values.startDateTime!, "yyyy年MM月dd日"),
+      value: format(
+        // biome-ignore lint/style/noNonNullAssertion: バリデーション済みのため
+        toZonedTime(values.startDateTime!, "Asia/Tokyo"),
+        "yyyy年MM月dd日",
+      ),
     },
     {
       label: "予約時間",
       // biome-ignore lint/style/noNonNullAssertion: バリデーション済みのため
-      value: `${format(values.startDateTime!, "HH:mm")} - ${format(values.endDateTime!, "HH:mm")}`,
+      value: `${format(toZonedTime(values.startDateTime!, "Asia/Tokyo"), "HH:mm")} - ${format(toZonedTime(values.endDateTime!, "Asia/Tokyo"), "HH:mm")}`,
     },
     {
       label: "人数",
@@ -147,13 +159,15 @@ export async function createReservation(values: IFormInput, _: FormData) {
 
   await sendEmail({
     to: values.customer.email,
-    reservationDetails: reservationDetails,
+    customer,
+    reservationDetails,
     options,
   });
 
   await sendEmailForAdmin({
     to: ADMIN_EMAIL,
-    reservationDetails: reservationDetails,
+    customer,
+    reservationDetails,
     options,
   });
 }
