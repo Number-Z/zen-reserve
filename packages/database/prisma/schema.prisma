@@ -31,8 +31,8 @@ model Service {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
 
-  reservations  Reservation[]
-  OptionService OptionService[]
+  reservations   Reservation[]
+  optionServices OptionService[]
 
   @@map("services")
 }
@@ -51,7 +51,7 @@ model Option {
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
 
   optionReservations OptionReservation[]
-  OptionService      OptionService[]
+  optionServices     OptionService[]
 
   @@map("options")
 }
@@ -89,13 +89,15 @@ model Reservation {
   status        ReservationStatus @default(PENDING) @map("status")
   totalPrice    Int               @map("total_price")
   discount      Int               @default(0) @map("discount")
+  instructorId  Int?              @map("instructor_id")
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
 
-  service            Service                      @relation(fields: [serviceId], references: [serviceId], onDelete: Restrict, onUpdate: Cascade)
-  optionReservations OptionReservation[]
   discoveryMethods   DiscoveryMethodReservation[]
+  instructor         Instructor?                  @relation(fields: [instructorId], references: [instructorId], onDelete: Restrict, onUpdate: Cascade)
+  optionReservations OptionReservation[]
+  service            Service                      @relation(fields: [serviceId], references: [serviceId], onDelete: Restrict, onUpdate: Cascade)
 
   @@index([serviceId])
   @@index([startDateTime, endDateTime])
@@ -134,9 +136,20 @@ model DiscoveryMethodReservation {
   reservationId       Int    @map("reservation_id")
   discoveryMethodName String @map("discovery_method_name")
 
-  Reservation     Reservation?     @relation(fields: [reservationId], references: [reservationId], onDelete: Cascade, onUpdate: Cascade)
-  DiscoveryMethod DiscoveryMethod? @relation(fields: [discoveryMethodName], references: [name], onDelete: Cascade, onUpdate: Cascade)
+  reservation     Reservation?     @relation(fields: [reservationId], references: [reservationId], onDelete: Cascade, onUpdate: Cascade)
+  discoveryMethod DiscoveryMethod? @relation(fields: [discoveryMethodName], references: [name], onDelete: Cascade, onUpdate: Cascade)
 
   @@id([reservationId, discoveryMethodName])
   @@map("discovery_methods_reservations")
+}
+
+model Instructor {
+  instructorId Int      @id @default(autoincrement()) @map("instructor_id")
+  name         String   @map("name") @db.VarChar(50)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  reservations Reservation[]
+
+  @@map("instructors")
 }

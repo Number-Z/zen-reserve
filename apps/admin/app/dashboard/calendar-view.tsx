@@ -30,13 +30,11 @@ const getColor = (serviceName: string) => {
   }
 };
 
-const getBackgroundColor = (status: keyof typeof RESERVATION_STATUS) => {
-  switch (status) {
-    case RESERVATION_STATUS.CANCELED:
-      return "#f00";
-    default:
-      return "#ffffff";
+const getTextColor = (instructorId: number | null) => {
+  if (instructorId) {
+    return "#fff";
   }
+  return "#f00";
 };
 
 export default function CalendarView({ reservations }: CalendarViewProps) {
@@ -48,7 +46,7 @@ export default function CalendarView({ reservations }: CalendarViewProps) {
     start: toZonedTime(reservation.startDateTime, "Asia/Tokyo"),
     end: toZonedTime(reservation.endDateTime, "Asia/Tokyo"),
     color: getColor(reservation.service.name),
-    textColor: getBackgroundColor(reservation.status),
+    textColor: getTextColor(reservation.instructorId),
   }));
 
   return (

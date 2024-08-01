@@ -40,6 +40,7 @@ export const reservationSchema = z.object({
     otherInfo: z.string().optional(),
   }),
   status: z.nativeEnum(RESERVATION_STATUS),
+  instructorId: z.coerce.number().optional(),
   discoveryMethods: z.array(z.string()),
   totalPrice: z.number().int().nonnegative(),
   discount: z.coerce

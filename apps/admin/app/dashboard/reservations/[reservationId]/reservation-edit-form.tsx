@@ -10,6 +10,7 @@ import {
   reservationSchema,
 } from "@/schemas/reservation";
 import type { DiscoveryMethodsType } from "@/services/getDiscoveryMethods";
+import type { InstructorsType } from "@/services/getInstructors";
 import type { OptionsType } from "@/services/getOptionsServices";
 import type { ReservationType } from "@/services/getReservationById";
 import { updateReservation } from "@/services/updateReservation";
@@ -20,12 +21,14 @@ import { useForm } from "react-hook-form";
 
 type ReservationEditFormProps = {
   reservation: Exclude<ReservationType, null>;
+  instructors: InstructorsType;
   discoveryMethods: DiscoveryMethodsType;
   options: OptionsType;
 };
 
 export default function ReservationEditForm({
   reservation,
+  instructors,
   discoveryMethods,
   options,
 }: ReservationEditFormProps) {
@@ -60,6 +63,7 @@ export default function ReservationEditForm({
         otherInfo: reservation.otherInfo ?? "",
       },
       status: reservation.status,
+      instructorId: reservation.instructorId ?? 0,
       discount: reservation.discount,
       totalPrice: reservation.totalPrice,
       discoveryMethods: reservation.discoveryMethods.map(
@@ -80,6 +84,7 @@ export default function ReservationEditForm({
         <Customer />
         <Details
           defaultTotalPrice={reservation.totalPrice}
+          instructors={instructors}
           discoveryMethods={discoveryMethods}
         />
         <Options options={options} />

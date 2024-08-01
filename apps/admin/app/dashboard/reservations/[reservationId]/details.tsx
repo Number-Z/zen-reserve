@@ -21,16 +21,19 @@ import { RESERVATION_STATUS } from "@/consts/status";
 import { getStatusString } from "@/lib/utils";
 import type { ReservationSchemaType } from "@/schemas/reservation";
 import type { DiscoveryMethodsType } from "@/services/getDiscoveryMethods";
+import type { InstructorsType } from "@/services/getInstructors";
 import { useEffect } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 
 type DetailsProps = {
   defaultTotalPrice: number;
+  instructors: InstructorsType;
   discoveryMethods: DiscoveryMethodsType;
 };
 
 export default function Details({
   defaultTotalPrice,
+  instructors,
   discoveryMethods,
 }: DetailsProps) {
   const form = useFormContext<ReservationSchemaType>();
@@ -101,6 +104,38 @@ export default function Details({
                   {Object.values(RESERVATION_STATUS).map((status) => (
                     <SelectItem key={status} value={status}>
                       {getStatusString(status)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormDescription />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="instructorId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>インストラクター</FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value?.toString() ?? ""}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="0">未アサイン</SelectItem>
+                  {instructors.map((instructor) => (
+                    <SelectItem
+                      key={instructor.instructorId}
+                      value={instructor.instructorId.toString()}
+                    >
+                      {instructor.name}
                     </SelectItem>
                   ))}
                 </SelectContent>

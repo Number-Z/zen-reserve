@@ -67,6 +67,8 @@ export async function updateReservation(reservation: ReservationSchemaType) {
       status:
         reservation.status as (typeof RESERVATION_STATUS)[keyof typeof RESERVATION_STATUS],
       // totalPrice: reservation.totalPrice,  // 画面上でdiscountを差し引いて表示するのでtotalPrice自体は更新しない
+      instructorId:
+        reservation.instructorId === 0 ? null : reservation.instructorId,
       discount: reservation.discount,
       optionReservations: {
         deleteMany: {}, // 既存のオプションをすべて削除

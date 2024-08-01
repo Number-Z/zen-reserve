@@ -2,17 +2,13 @@
 
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { getStatusString } from "@/lib/utils";
-import type { Reservation, Service } from "@prisma/client";
+import type { ReservationsType } from "@/services/getReservations";
 import type { ColumnDef } from "@tanstack/react-table";
 import { differenceInHours, format } from "date-fns";
 import { Pencil } from "lucide-react";
 import Link from "next/link";
 
-export const columns: ColumnDef<
-  Reservation & {
-    service: Service;
-  }
->[] = [
+export const columns: ColumnDef<ReservationsType[number]>[] = [
   {
     accessorKey: "reservationId",
     header: ({ column }) => (
@@ -109,6 +105,13 @@ export const columns: ColumnDef<
       <DataTableColumnHeader column={column} title="ステータス" />
     ),
     cell: (info) => getStatusString(info.row.original.status),
+  },
+  {
+    accessorKey: "instructor",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="インストラクター" />
+    ),
+    cell: (info) => info.row.original.instructor?.name ?? "未アサイン",
   },
   {
     accessorKey: "edit",

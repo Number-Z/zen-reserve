@@ -1,6 +1,7 @@
 "use server";
 
 import type { RESERVATION_STATUS } from "@/consts/status";
+import type { Prisma } from "@prisma/client";
 import prisma from "@zen-reserve/database";
 
 type GetReservationsParams = {
@@ -18,8 +19,11 @@ export default async function getReservations({
       OR: statuses.map((status) => ({ status })),
     },
     include: {
+      instructor: true,
       service: true,
     },
   });
   return reservations;
 }
+
+export type ReservationsType = Prisma.PromiseReturnType<typeof getReservations>;
