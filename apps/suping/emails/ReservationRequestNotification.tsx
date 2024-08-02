@@ -44,7 +44,7 @@ export default function ReservationRequestNotification({
         <Body className="bg-white font-sans">
           <Container className="mx-auto max-w-xl px-0 py-5">
             <Img
-              src="https://www.saunping.jp/wp-content/uploads/2023/09/S__16113680-removebg-preview.png" // TODO: TBD
+              src="http://www.suping.jp/wp-content/uploads/2024/07/ZEN-ロゴ-1-02.png" // TODO: TBD
               width="42"
               height="42"
               alt={SERVICE_NAME}
