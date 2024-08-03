@@ -28,15 +28,15 @@ export async function createReservation(values: IFormInput, _: FormData) {
 
   for (const [optionName, optionValue] of Object.entries(values.options)) {
     const option = optionsServices.find(
-      (opt) => opt.option.name === optionName,
+      (opt) => opt.Option.name === optionName,
     );
     if (option) {
       if (typeof optionValue === "boolean") {
         if (optionValue) {
-          totalPrice += option.option.price;
+          totalPrice += option.Option.price;
         }
       } else if (typeof optionValue === "number" && optionValue > 0) {
-        totalPrice += option.option.price * optionValue;
+        totalPrice += option.Option.price * optionValue;
       }
     }
   }
@@ -50,7 +50,7 @@ export async function createReservation(values: IFormInput, _: FormData) {
       return value === true;
     })
     .map(([key, value]) => {
-      const option = optionsServices.find((opt) => opt.option.name === key);
+      const option = optionsServices.find((opt) => opt.Option.name === key);
       if (!option) {
         throw new Error(`Option with name ${key} not found`);
       }
@@ -126,7 +126,7 @@ export async function createReservation(values: IFormInput, _: FormData) {
   const options = Object.entries(values.options)
     .map(([key, optionValue]) => {
       const optionService = optionsServices.find(
-        (opt) => opt.option.name === key,
+        (opt) => opt.Option.name === key,
       );
       if (!optionService) {
         // オプションが見つからない場合はスキップ
@@ -143,7 +143,7 @@ export async function createReservation(values: IFormInput, _: FormData) {
       }
 
       return {
-        label: optionService.option.printName,
+        label: optionService.Option.printName,
         value: displayValue,
       };
     })

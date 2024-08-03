@@ -10,7 +10,7 @@ export const revalidate = 0;
 
 export default async function Page() {
   const minDate = addHours(toZonedTime(new Date(), "Asia/Tokyo"), 48);
-  const options = await getOptionsServices();
+  const optionsServices = await getOptionsServices();
   const discoveryMethods = await getDiscoveryMethods();
 
   return (
@@ -19,7 +19,7 @@ export default async function Page() {
       <main className="pt-24 pb-12">
         <ReservationForm
           minDate={minDate}
-          options={options}
+          optionsServices={optionsServices}
           discoveryMethods={discoveryMethods}
         />
       </main>

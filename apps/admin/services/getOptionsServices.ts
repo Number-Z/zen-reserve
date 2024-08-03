@@ -9,14 +9,16 @@ export default async function getOptionsServices(serviceId: number) {
       serviceId,
     },
     include: {
-      option: true,
+      Option: true,
     },
     orderBy: {
       order: "asc",
     },
   });
 
-  return optionsServices.map((os) => os.option);
+  return optionsServices.map((os) => os.Option);
 }
 
-export type OptionsType = Prisma.PromiseReturnType<typeof getOptionsServices>;
+export type OptionsServicesType = Prisma.PromiseReturnType<
+  typeof getOptionsServices
+>;

@@ -1,7 +1,7 @@
 "use client";
 
+import type { OptionsServicesType } from "@/app/services/getOptionsServices";
 import type { IFormInput } from "@/app/types/IFormInput";
-import type { Option, OptionService } from "@prisma/client";
 import { useFormContext } from "react-hook-form";
 
 const TableRow = ({ label, value }: { label: string; value: string }) => (
@@ -16,17 +16,15 @@ const TableRow = ({ label, value }: { label: string; value: string }) => (
 );
 
 type OptionsTableProps = {
-  options: (OptionService & {
-    option: Option;
-  })[];
+  optionsServices: OptionsServicesType;
 };
 
-export default function OptionsTable({ options }: OptionsTableProps) {
+export default function OptionsTable({ optionsServices }: OptionsTableProps) {
   const { getValues } = useFormContext<IFormInput>();
   const values = getValues();
 
-  const rows = options.map((optionService) => {
-    const option = optionService.option;
+  const rows = optionsServices.map((optionsService) => {
+    const option = optionsService.Option;
     const optionValue =
       values.options[option.name as keyof typeof values.options];
 

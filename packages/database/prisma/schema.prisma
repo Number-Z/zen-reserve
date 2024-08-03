@@ -4,9 +4,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Admin {
@@ -21,105 +20,6 @@ model Admin {
 
   @@index([email])
   @@map("admins")
-}
-
-model Service {
-  serviceId   Int     @id @default(autoincrement()) @map("service_id")
-  name        String  @unique @map("name") @db.VarChar(100)
-  description String? @map("description") @db.Text
-
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
-
-  OptionService   OptionService[]
-  Reservation     Reservation[]
-  UnavailableTime UnavailableTime[]
-
-  @@map("services")
-}
-
-model Option {
-  optionId    Int     @id @default(autoincrement()) @map("option_id")
-  name        String  @default("") @map("name") @db.VarChar(100)
-  printName   String  @default("") @map("print_name") @db.VarChar(100)
-  description String? @map("description") @db.Text
-  price       Int     @map("price")
-  stock       Int?    @map("stock")
-  limit       Int?    @map("limit")
-  displayType String  @default("input") @map("display_type") @db.VarChar(20)
-
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
-
-  OptionService     OptionService[]
-  OptionReservation OptionReservation[]
-
-  @@map("options")
-}
-
-model OptionService {
-  serviceId Int @map("service_id")
-  optionId  Int @map("option_id")
-  order     Int @map("order")
-
-  option  Option  @relation(fields: [optionId], references: [optionId], onDelete: Cascade, onUpdate: Cascade)
-  service Service @relation(fields: [serviceId], references: [serviceId], onDelete: Cascade, onUpdate: Cascade)
-
-  @@id([serviceId, optionId])
-  @@map("options_services")
-}
-
-enum ReservationStatus {
-  PENDING   @map("PENDING")
-  CONFIRMED @map("CONFIRMED")
-  CANCELED  @map("CANCELED")
-}
-
-model Reservation {
-  reservationId Int               @id @default(autoincrement()) @map("reservation_id")
-  serviceId     Int               @map("service_id")
-  startDateTime DateTime          @map("start_date_time") @db.Timestamptz()
-  endDateTime   DateTime          @map("end_date_time") @db.Timestamptz()
-  firstName     String            @map("first_name") @db.VarChar(50)
-  lastName      String            @map("last_name") @db.VarChar(50)
-  email         String            @map("email") @db.VarChar(100)
-  phoneNumber   String            @map("phone_number") @db.VarChar(20)
-  adultCount    Int               @default(0) @map("adult_count")
-  childCount    Int               @default(0) @map("child_count")
-  otherInfo     String?           @map("other_info") @db.Text
-  status        ReservationStatus @default(PENDING) @map("status")
-  totalPrice    Int               @map("total_price")
-  discount      Int               @default(0) @map("discount")
-  instructorId  Int?              @map("instructor_id")
-
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
-
-  DiscoveryMethodReservation DiscoveryMethodReservation[]
-  Instructor                 Instructor?                  @relation(fields: [instructorId], references: [instructorId])
-  OptionReservation          OptionReservation[]
-  Service                    Service?                     @relation(fields: [serviceId], references: [serviceId])
-
-  @@index([serviceId])
-  @@index([startDateTime, endDateTime])
-  @@map("reservations")
-}
-
-model OptionReservation {
-  optionId      Int @map("option_id")
-  reservationId Int @map("reservation_id")
-  quantity      Int @map("quantity")
-
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
-
-  Option      Option?      @relation(fields: [optionId], references: [optionId])
-  Reservation Reservation? @relation(fields: [reservationId], references: [reservationId])
-
-  @@id([reservationId, optionId])
-  @@index([reservationId])
-  @@index([optionId])
-  @@map("options_reservations")
 }
 
 model DiscoveryMethod {
@@ -137,29 +37,122 @@ model DiscoveryMethodReservation {
   reservationId       Int    @map("reservation_id")
   discoveryMethodName String @map("discovery_method_name")
 
-  Reservation     Reservation?    @relation(fields: [reservationId], references: [reservationId])
-  DiscoveryMethod DiscoveryMethod @relation(fields: [discoveryMethodName], references: [name])
+  DiscoveryMethod DiscoveryMethod @relation(fields: [discoveryMethodName], references: [name], onDelete: Cascade)
+  Reservation     Reservation     @relation(fields: [reservationId], references: [reservationId], onDelete: Cascade)
 
   @@id([reservationId, discoveryMethodName])
   @@map("discovery_methods_reservations")
 }
 
 model Instructor {
-  instructorId Int      @id @default(autoincrement()) @map("instructor_id")
-  name         String   @map("name") @db.VarChar(50)
-  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
+  instructorId Int    @id @default(autoincrement()) @map("instructor_id")
+  name         String @map("name") @db.VarChar(50)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
 
   Reservation Reservation[]
 
   @@map("instructors")
 }
 
+model Option {
+  optionId    Int     @id @default(autoincrement()) @map("option_id")
+  name        String  @default("") @map("name") @db.VarChar(100)
+  printName   String  @default("") @map("print_name") @db.VarChar(100)
+  description String? @map("description")
+  price       Int     @map("price")
+  stock       Int?    @map("stock")
+  limit       Int?    @map("limit")
+  displayType String  @default("input") @map("display_type") @db.VarChar(20)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  OptionReservation OptionReservation[]
+  OptionService     OptionService[]
+
+  @@map("options")
+}
+
+model OptionReservation {
+  optionId      Int @map("option_id")
+  reservationId Int @map("reservation_id")
+  quantity      Int @map("quantity")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  Option      Option      @relation(fields: [optionId], references: [optionId], onDelete: Cascade)
+  Reservation Reservation @relation(fields: [reservationId], references: [reservationId], onDelete: Cascade)
+
+  @@id([reservationId, optionId])
+  @@index([optionId])
+  @@index([reservationId])
+  @@map("options_reservations")
+}
+
+model OptionService {
+  serviceId Int     @map("service_id")
+  optionId  Int     @map("option_id")
+  order     Int
+  Option    Option  @relation(fields: [optionId], references: [optionId], onDelete: Cascade)
+  Service   Service @relation(fields: [serviceId], references: [serviceId], onDelete: Cascade)
+
+  @@id([serviceId, optionId])
+  @@map("options_services")
+}
+
+model Reservation {
+  reservationId Int               @id @default(autoincrement()) @map("reservation_id")
+  serviceId     Int               @map("service_id")
+  startDateTime DateTime          @map("start_date_time") @db.Timestamptz(6)
+  endDateTime   DateTime          @map("end_date_time") @db.Timestamptz(6)
+  firstName     String            @map("first_name") @db.VarChar(50)
+  lastName      String            @map("last_name") @db.VarChar(50)
+  email         String            @map("email") @db.VarChar(100)
+  phoneNumber   String            @map("phone_number") @db.VarChar(20)
+  adultCount    Int               @default(0) @map("adult_count")
+  childCount    Int               @default(0) @map("child_count")
+  otherInfo     String?           @map("other_info")
+  status        ReservationStatus @default(PENDING) @map("status")
+  totalPrice    Int               @map("total_price")
+  discount      Int               @default(0) @map("discount")
+  instructorId  Int?              @map("instructor_id")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  DiscoveryMethodReservation DiscoveryMethodReservation[]
+  OptionReservation          OptionReservation[]
+  Instructor                 Instructor?                  @relation(fields: [instructorId], references: [instructorId], onDelete: Restrict)
+  Service                    Service                      @relation(fields: [serviceId], references: [serviceId])
+
+  @@index([serviceId])
+  @@index([startDateTime, endDateTime])
+  @@map("reservations")
+}
+
+model Service {
+  serviceId   Int     @id @default(autoincrement()) @map("service_id")
+  name        String  @unique @map("name") @db.VarChar(100)
+  description String? @map("description")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  OptionService   OptionService[]
+  Reservation     Reservation[]
+  UnavailableTime UnavailableTime[]
+
+  @@map("services")
+}
+
 model UnavailableTime {
   unavailableTimeId Int      @id @default(autoincrement()) @map("unavailable_time_id")
-  serviceId         Int      @map("service_id")
-  startDateTime     DateTime @map("start_date_time") @db.Timestamptz()
-  endDateTime       DateTime @map("end_date_time") @db.Timestamptz()
+  serviceId         Int?     @map("service_id")
+  startDateTime     DateTime @map("start_date_time") @db.Timestamptz(6)
+  endDateTime       DateTime @map("end_date_time") @db.Timestamptz(6)
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
@@ -169,4 +162,10 @@ model UnavailableTime {
   @@index([serviceId])
   @@index([startDateTime, endDateTime])
   @@map("unavailable_times")
+}
+
+enum ReservationStatus {
+  PENDING   @map("PENDING")
+  CONFIRMED @map("CONFIRMED")
+  CANCELED  @map("CANCELED")
 }

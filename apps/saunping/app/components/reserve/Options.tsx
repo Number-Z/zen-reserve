@@ -1,14 +1,12 @@
-import type { Option, OptionService } from "@prisma/client";
+import type { OptionsServicesType } from "@/app/services/getOptionsServices";
 import { useCallback, useEffect, useState } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 
 type OptionsProps = {
-  options: (OptionService & {
-    option: Option;
-  })[];
+  optionsServices: OptionsServicesType;
 };
 
-export default function Options({ options }: OptionsProps) {
+export default function Options({ optionsServices }: OptionsProps) {
   const { register } = useFormContext();
 
   const startDateTime = useWatch({
@@ -86,11 +84,11 @@ export default function Options({ options }: OptionsProps) {
   return (
     <section className="flex flex-col gap-6 px-6">
       <h2 className="font-bold text-gray-900 text-xl">オプション選択</h2>
-      {options.map((option) => {
+      {optionsServices.map((optionService) => {
         const availableOptions = getAvailableOptions(
-          option.optionId,
-          option.option.stock,
-          option.option.limit,
+          optionService.optionId,
+          optionService.Option.stock,
+          optionService.Option.limit,
         );
 
         const unavailable = availableOptions === 0;
@@ -102,13 +100,15 @@ export default function Options({ options }: OptionsProps) {
           getAvailableCount() === 0;
 
         return (
-          <div key={option.optionId} className="w-full">
-            {option.option.displayType === "select" ? (
+          <div key={optionService.optionId} className="w-full">
+            {optionService.Option.displayType === "select" ? (
               <>
-                <label htmlFor={option.option.name}>
-                  <span className="text-sm">{option.option.printName}</span>
+                <label htmlFor={optionService.Option.name}>
+                  <span className="text-sm">
+                    {optionService.Option.printName}
+                  </span>
                   <span className="float-right text-sm">
-                    +{option.option.price.toLocaleString()}円
+                    +{optionService.Option.price.toLocaleString()}円
                   </span>
                 </label>
                 {unavailable ? (
@@ -117,42 +117,45 @@ export default function Options({ options }: OptionsProps) {
                   </div>
                 ) : (
                   <select
-                    {...register(`options.${option.option.name}`, {
+                    {...register(`options.${optionService.Option.name}`, {
                       valueAsNumber: true,
                     })}
-                    id={option.option.name}
+                    id={optionService.Option.name}
                     className="block w-full rounded-lg border border-gray-200 p-4 text-sm focus:border-blue-500 focus:ring-blue-500 disabled:pointer-events-none disabled:opacity-50"
                     disabled={isDisabled}
                   >
                     <option value="0">0</option>
                     {Array.from({ length: availableOptions }, (_, i) => (
-                      <option key={`${option.optionId}-${i}`} value={i + 1}>
+                      <option
+                        key={`${optionService.optionId}-${i}`}
+                        value={i + 1}
+                      >
                         {i + 1}
                       </option>
                     ))}
                   </select>
                 )}
               </>
-            ) : option.option.displayType === "toggle" ? (
+            ) : optionService.Option.displayType === "toggle" ? (
               <>
                 <label
-                  htmlFor={option.option.name}
+                  htmlFor={optionService.Option.name}
                   className={`inline-flex items-center ${isDisabled ? "pointer-events-none opacity-50" : "cursor-pointer"}`}
                 >
                   <input
-                    id={option.option.name}
+                    id={optionService.Option.name}
                     type="checkbox"
-                    {...register(`options.${option.option.name}`)}
+                    {...register(`options.${optionService.Option.name}`)}
                     className="peer sr-only"
                     disabled={isDisabled}
                   />
                   <div className="peer rtl:peer-checked:after:-translate-x-full relative h-6 w-11 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300" />
                   <span className="ms-3 font-medium text-gray-900 text-sm">
-                    {option.option.printName}
+                    {optionService.Option.printName}
                   </span>
                 </label>
                 <span className="float-right text-sm">
-                  +{option.option.price.toLocaleString()}円
+                  +{optionService.Option.price.toLocaleString()}円
                 </span>
                 {unavailable && (
                   <p className="mt-2 text-red-500 text-sm">在庫なし</p>
@@ -162,7 +165,7 @@ export default function Options({ options }: OptionsProps) {
               <></>
             )}
             <p className="whitespace-pre-wrap text-slate-500 text-sm leading-8">
-              {option.option.description}
+              {optionService.Option.description}
             </p>
           </div>
         );

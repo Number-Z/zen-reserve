@@ -3,16 +3,14 @@ import ConfirmationActions from "@/app/components/confirm/ConfirmationActions";
 import DetailsTable from "@/app/components/confirm/DetailsTable";
 import Notes from "@/app/components/confirm/Notes";
 import OptionsTable from "@/app/components/confirm/OptionsTable";
-import type { Option, OptionService } from "@prisma/client";
+import type { OptionsServicesType } from "@/app/services/getOptionsServices";
 import { CircleAlert } from "lucide-react";
 
 type ConfirmationProps = {
-  options: (OptionService & {
-    option: Option;
-  })[];
+  optionsServices: OptionsServicesType;
 };
 
-export default function Confirmation({ options }: ConfirmationProps) {
+export default function Confirmation({ optionsServices }: ConfirmationProps) {
   return (
     <>
       <CheckValues />
@@ -45,7 +43,7 @@ export default function Confirmation({ options }: ConfirmationProps) {
         </section>
         <section>
           <h3 className="font-bold">オプション内容</h3>
-          <OptionsTable options={options} />
+          <OptionsTable optionsServices={optionsServices} />
         </section>
         <section>
           <h3 className="font-bold">予約に関しての注意事項</h3>

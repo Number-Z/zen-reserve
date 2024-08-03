@@ -15,21 +15,21 @@ export default function ConfirmationActions() {
   const [isAgreed, setIsAgreed] = useState(false);
   const [isPending, startTransition] = useTransition();
 
+  const { getValues, reset } = useFormContext<IFormInput>();
+  const values = getValues();
+  const createReservationWithValues = createReservation.bind(null, values);
+
   const handleSubmit = async (formData: FormData) => {
     startTransition(async () => {
       try {
         await createReservationWithValues(formData);
+        reset();
         router.push("/complete");
       } catch (error) {
         console.error(error);
       }
     });
   };
-
-  const { getValues } = useFormContext<IFormInput>();
-  const values = getValues();
-  const createReservationWithValues = createReservation.bind(null, values);
-
   return (
     <section>
       <div className="flex flex-col gap-4 bg-white p-4">

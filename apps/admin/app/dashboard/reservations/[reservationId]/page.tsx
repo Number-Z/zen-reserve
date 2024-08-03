@@ -24,7 +24,7 @@ export default async function Page({
 
   const instructors = await getInstructors();
   const discoveryMethods = await getDiscoveryMethods();
-  const options = await getOptionsServices(reservation.serviceId);
+  const optionsServices = await getOptionsServices(reservation.serviceId);
 
   return (
     <div className="flex h-full flex-col gap-4">
@@ -37,7 +37,7 @@ export default async function Page({
             reservation={reservation}
             instructors={instructors}
             discoveryMethods={discoveryMethods}
-            options={options}
+            optionsServices={optionsServices}
           />
         </CardContent>
       </Card>

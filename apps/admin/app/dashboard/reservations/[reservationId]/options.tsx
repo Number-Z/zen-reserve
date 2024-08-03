@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DateTimePicker } from "@/components/ui/datetime-picker";
 import {
   FormControl,
   FormDescription,
@@ -12,15 +11,14 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import type { ReservationSchemaType } from "@/schemas/reservation";
-import type { OptionsType } from "@/services/getOptionsServices";
-import type { ReservationType } from "@/services/getReservationById";
+import type { OptionsServicesType } from "@/services/getOptionsServices";
 import { useFormContext } from "react-hook-form";
 
 type DetailsProps = {
-  options: OptionsType;
+  optionsServices: OptionsServicesType;
 };
 
-export default function Options({ options }: DetailsProps) {
+export default function Options({ optionsServices }: DetailsProps) {
   const form = useFormContext<ReservationSchemaType>();
 
   return (
@@ -29,13 +27,13 @@ export default function Options({ options }: DetailsProps) {
         <CardTitle>オプション一覧</CardTitle>
       </CardHeader>
       <CardContent className="p-2">
-        {options.map((option) => (
+        {optionsServices.map((optionService) => (
           <FormField
-            key={option.optionId}
+            key={optionService.optionId}
             control={form.control}
-            name={`options.${option.name}`}
+            name={`options.${optionService.name}`}
             render={({ field }) => {
-              switch (option.displayType) {
+              switch (optionService.displayType) {
                 case "toggle":
                   return (
                     <FormItem className="flex items-center gap-2 px-2 py-4">
@@ -46,7 +44,7 @@ export default function Options({ options }: DetailsProps) {
                         />
                       </FormControl>
                       <div className="!mt-0">
-                        <FormLabel>{option.printName}</FormLabel>
+                        <FormLabel>{optionService.printName}</FormLabel>
                         <FormDescription />
                       </div>
                     </FormItem>
@@ -54,7 +52,7 @@ export default function Options({ options }: DetailsProps) {
                 case "select":
                   return (
                     <FormItem>
-                      <FormLabel>{option.printName}</FormLabel>
+                      <FormLabel>{optionService.printName}</FormLabel>
                       <FormControl>
                         <Input
                           type="number"

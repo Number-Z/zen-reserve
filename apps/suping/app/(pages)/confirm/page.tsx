@@ -6,13 +6,13 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function Page() {
-  const options = await getOptionsServices();
+  const optionsServices = await getOptionsServices();
 
   return (
     <>
       <NavBar />
       <main className="mx-auto max-w-4xl pt-24 pb-12">
-        <Confirmation options={options} />
+        <Confirmation optionsServices={optionsServices} />
       </main>
     </>
   );

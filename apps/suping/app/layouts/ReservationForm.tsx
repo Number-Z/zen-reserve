@@ -8,6 +8,7 @@ import DiscoveryMethod from "@/app/components/reserve/DiscoveryMethod";
 import Options from "@/app/components/reserve/Options";
 import Participants from "@/app/components/reserve/Participants";
 import Time from "@/app/components/reserve/Time";
+import type { OptionsServicesType } from "@/app/services/getOptionsServices";
 import type { IFormInput } from "@/app/types/IFormInput";
 import type {
   DiscoveryMethod as IDiscoveryMethod,
@@ -20,9 +21,7 @@ import { type SubmitHandler, useFormContext, useWatch } from "react-hook-form";
 
 type ReservationFormProps = {
   minDate: Date;
-  options: (OptionService & {
-    option: Option;
-  })[];
+  optionsServices: OptionsServicesType;
   discoveryMethods: IDiscoveryMethod[];
 };
 
@@ -36,7 +35,7 @@ const MemoizedDetails = memo(Details);
 
 export default function ReservationForm({
   minDate,
-  options,
+  optionsServices,
   discoveryMethods,
 }: ReservationFormProps) {
   const methods = useFormContext<IFormInput>();
@@ -46,9 +45,7 @@ export default function ReservationForm({
   const memoizedCalculateTotalPrice = useMemo(() => {
     return (
       selectedOptions: IFormInput["options"],
-      availableOptions: (OptionService & {
-        option: Option;
-      })[],
+      availableOptions: OptionsServicesType,
       adultCount: number,
       childCount: number,
     ): number => {
@@ -56,16 +53,16 @@ export default function ReservationForm({
 
       for (const [optionName, optionValue] of Object.entries(selectedOptions)) {
         const option = availableOptions.find(
-          (o) => o.option.name === optionName,
+          (o) => o.Option.name === optionName,
         );
         if (option) {
           if (typeof optionValue === "boolean") {
             if (optionValue) {
-              totalPrice += option.option.price;
+              totalPrice += option.Option.price;
             }
           } else if (typeof optionValue === "number") {
             if (optionValue > 0) {
-              totalPrice += option.option.price * optionValue;
+              totalPrice += option.Option.price * optionValue;
             }
           }
         }
@@ -90,7 +87,7 @@ export default function ReservationForm({
   useEffect(() => {
     const totalPrice = memoizedCalculateTotalPrice(
       watchedOptions,
-      options,
+      optionsServices,
       adultCount,
       childCount,
     );
@@ -98,7 +95,7 @@ export default function ReservationForm({
   }, [
     memoizedCalculateTotalPrice,
     watchedOptions,
-    options,
+    optionsServices,
     adultCount,
     childCount,
     methods.setValue,
@@ -119,7 +116,7 @@ export default function ReservationForm({
       <div className="col-span-1 mx-auto flex w-full max-w-4xl flex-col gap-8 lg:col-span-2">
         <MemoizedTime />
         <MemoizedParticipants />
-        <MemoizedOptions options={options} />
+        <MemoizedOptions optionsServices={optionsServices} />
         <MemoizedCustomer />
         <MemoizedDiscoveryMethod discoveryMethods={discoveryMethods} />
         <MemoizedDetails />
