@@ -31,8 +31,9 @@ model Service {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
 
-  reservations   Reservation[]
-  optionServices OptionService[]
+  OptionService   OptionService[]
+  Reservation     Reservation[]
+  UnavailableTime UnavailableTime[]
 
   @@map("services")
 }
@@ -50,8 +51,8 @@ model Option {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
 
-  optionReservations OptionReservation[]
-  optionServices     OptionService[]
+  OptionService     OptionService[]
+  OptionReservation OptionReservation[]
 
   @@map("options")
 }
@@ -94,10 +95,10 @@ model Reservation {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
 
-  discoveryMethods   DiscoveryMethodReservation[]
-  instructor         Instructor?                  @relation(fields: [instructorId], references: [instructorId], onDelete: Restrict, onUpdate: Cascade)
-  optionReservations OptionReservation[]
-  service            Service                      @relation(fields: [serviceId], references: [serviceId], onDelete: Restrict, onUpdate: Cascade)
+  DiscoveryMethodReservation DiscoveryMethodReservation[]
+  Instructor                 Instructor?                  @relation(fields: [instructorId], references: [instructorId])
+  OptionReservation          OptionReservation[]
+  Service                    Service?                     @relation(fields: [serviceId], references: [serviceId])
 
   @@index([serviceId])
   @@index([startDateTime, endDateTime])
@@ -112,8 +113,8 @@ model OptionReservation {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
 
-  reservation Reservation @relation(fields: [reservationId], references: [reservationId], onDelete: Cascade, onUpdate: Cascade)
-  option      Option      @relation(fields: [optionId], references: [optionId], onDelete: Cascade, onUpdate: Cascade)
+  Option      Option?      @relation(fields: [optionId], references: [optionId])
+  Reservation Reservation? @relation(fields: [reservationId], references: [reservationId])
 
   @@id([reservationId, optionId])
   @@index([reservationId])
@@ -127,7 +128,7 @@ model DiscoveryMethod {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
 
-  reservations DiscoveryMethodReservation[]
+  DiscoveryMethodReservation DiscoveryMethodReservation[]
 
   @@map("discovery_methods")
 }
@@ -136,8 +137,8 @@ model DiscoveryMethodReservation {
   reservationId       Int    @map("reservation_id")
   discoveryMethodName String @map("discovery_method_name")
 
-  reservation     Reservation?     @relation(fields: [reservationId], references: [reservationId], onDelete: Cascade, onUpdate: Cascade)
-  discoveryMethod DiscoveryMethod? @relation(fields: [discoveryMethodName], references: [name], onDelete: Cascade, onUpdate: Cascade)
+  Reservation     Reservation?    @relation(fields: [reservationId], references: [reservationId])
+  DiscoveryMethod DiscoveryMethod @relation(fields: [discoveryMethodName], references: [name])
 
   @@id([reservationId, discoveryMethodName])
   @@map("discovery_methods_reservations")
@@ -149,7 +150,23 @@ model Instructor {
   createdAt    DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
 
-  reservations Reservation[]
+  Reservation Reservation[]
 
   @@map("instructors")
+}
+
+model UnavailableTime {
+  unavailableTimeId Int      @id @default(autoincrement()) @map("unavailable_time_id")
+  serviceId         Int      @map("service_id")
+  startDateTime     DateTime @map("start_date_time") @db.Timestamptz()
+  endDateTime       DateTime @map("end_date_time") @db.Timestamptz()
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  Service Service? @relation(fields: [serviceId], references: [serviceId])
+
+  @@index([serviceId])
+  @@index([startDateTime, endDateTime])
+  @@map("unavailable_times")
 }
