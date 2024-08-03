@@ -20,7 +20,7 @@ export const columns: ColumnDef<ReservationsType[number]>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="サービス" />
     ),
-    cell: (info) => info.row.original.service.name,
+    cell: (info) => info.row.original.Service?.name ?? "不明",
   },
   {
     accessorKey: "lastName",
@@ -111,7 +111,7 @@ export const columns: ColumnDef<ReservationsType[number]>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="インストラクター" />
     ),
-    cell: (info) => info.row.original.instructor?.name ?? "未アサイン",
+    cell: (info) => info.row.original.Instructor?.name ?? "未アサイン",
   },
   {
     accessorKey: "edit",

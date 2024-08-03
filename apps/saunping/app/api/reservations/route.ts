@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
         gte: utcStartOfDay,
         lte: utcEndOfDay,
       },
-      service: {
+      Service: {
         name: SERVICE_NAME,
       },
       status: {
@@ -36,7 +36,7 @@ export async function GET(req: NextRequest) {
       },
     },
     include: {
-      service: true,
+      Service: true,
     },
   });
 

@@ -21,7 +21,7 @@ export async function updateReservation(reservation: ReservationSchemaType) {
   // 現在の予約情報を取得
   const currentReservation = await prisma.reservation.findUnique({
     where: { reservationId: reservation.reservationId },
-    include: { optionReservations: { include: { option: true } } },
+    include: { OptionReservation: { include: { Option: true } } },
   });
 
   if (!currentReservation) {
@@ -70,21 +70,25 @@ export async function updateReservation(reservation: ReservationSchemaType) {
       instructorId:
         reservation.instructorId === 0 ? null : reservation.instructorId,
       discount: reservation.discount,
-      optionReservations: {
+      OptionReservation: {
         deleteMany: {}, // 既存のオプションをすべて削除
         create: optionReservationsData, // オプションを新規作成
       },
       // discoveryMethods: {},  // 予約経路チェックボックスは閲覧のみ（disabled）にしているので更新しない
     },
     include: {
-      optionReservations: {
+      OptionReservation: {
         include: {
-          option: true,
+          Option: true,
         },
       },
-      service: true,
+      Service: true,
     },
   });
+
+  if (!updatedReservation.Service?.name) {
+    throw new Error("Service not found");
+  }
 
   // 予約詳細の配列
   const reservationDetails = [
@@ -106,7 +110,7 @@ export async function updateReservation(reservation: ReservationSchemaType) {
 
   // オプションの配列
   const options = optionsServices.map((optionService) => {
-    const optionReservation = updatedReservation.optionReservations.find(
+    const optionReservation = updatedReservation.OptionReservation.find(
       (or) => or.optionId === optionService.optionId,
     );
 
@@ -135,7 +139,7 @@ export async function updateReservation(reservation: ReservationSchemaType) {
 
   // from の決定
   let from = "noreply@reserve.z-en.jp";
-  switch (updatedReservation.service.name) {
+  switch (updatedReservation.Service.name) {
     case "SAUNPING":
       from = "noreply@reserve.saunping.jp";
       break;
@@ -150,7 +154,7 @@ export async function updateReservation(reservation: ReservationSchemaType) {
       from,
       to: updatedReservation.email,
       status: updatedReservation.status,
-      serviceName: updatedReservation.service.name,
+      serviceName: updatedReservation.Service?.name,
       reservationDetails: reservationDetails,
       options: options,
     });

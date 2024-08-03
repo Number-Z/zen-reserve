@@ -24,9 +24,9 @@ export async function GET(req: NextRequest) {
     select: {
       optionId: true,
       name: true,
-      optionReservations: {
+      OptionReservation: {
         where: {
-          reservation: {
+          Reservation: {
             startDateTime: {
               gte: utcStartOfDay,
               lte: utcEndOfDay,
@@ -46,7 +46,7 @@ export async function GET(req: NextRequest) {
   const optionsCount = options.map((option) => ({
     optionId: option.optionId,
     name: option.name,
-    count: option.optionReservations.reduce(
+    count: option.OptionReservation.reduce(
       (sum, reservation) => sum + reservation.quantity,
       0,
     ),

@@ -1,20 +1,17 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { RESERVATION_STATUS } from "@/consts/status";
 import { getStatusString } from "@/lib/utils";
+import type { ReservationsType } from "@/services/getReservations";
 import jaLocale from "@fullcalendar/core/locales/ja";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import type { Reservation, Service } from "@prisma/client";
 import { toZonedTime } from "date-fns-tz";
 import { useRouter } from "next/navigation";
 
 type CalendarViewProps = {
-  reservations: (Reservation & {
-    service: Service;
-  })[];
+  reservations: ReservationsType;
 };
 
 const getColor = (serviceName: string) => {
@@ -30,7 +27,7 @@ const getColor = (serviceName: string) => {
   }
 };
 
-const getTextColor = (instructorId: number | null) => {
+const getTextColor = (instructorId: number | undefined) => {
   if (instructorId) {
     return "#fff";
   }
@@ -45,8 +42,8 @@ export default function CalendarView({ reservations }: CalendarViewProps) {
     title: `${reservation.lastName} ${reservation.firstName} (${getStatusString(reservation.status)})`,
     start: toZonedTime(reservation.startDateTime, "Asia/Tokyo"),
     end: toZonedTime(reservation.endDateTime, "Asia/Tokyo"),
-    color: getColor(reservation.service.name),
-    textColor: getTextColor(reservation.instructorId),
+    color: getColor(reservation.Service?.name ?? ""),
+    textColor: getTextColor(reservation.Instructor?.instructorId),
   }));
 
   return (

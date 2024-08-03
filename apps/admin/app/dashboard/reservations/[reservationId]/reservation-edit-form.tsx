@@ -36,7 +36,7 @@ export default function ReservationEditForm({
 
   const defaultOptions = options.reduce(
     (acc, option) => {
-      const optionReservation = reservation.optionReservations.find(
+      const optionReservation = reservation.OptionReservation.find(
         (optionReservation) => optionReservation.optionId === option.optionId,
       );
       acc[option.name] = optionReservation?.quantity ?? 0;
@@ -66,7 +66,7 @@ export default function ReservationEditForm({
       instructorId: reservation.instructorId ?? 0,
       discount: reservation.discount,
       totalPrice: reservation.totalPrice,
-      discoveryMethods: reservation.discoveryMethods.map(
+      discoveryMethods: reservation.DiscoveryMethodReservation.map(
         (discoveryMethod) => discoveryMethod.discoveryMethodName,
       ),
       options: defaultOptions,

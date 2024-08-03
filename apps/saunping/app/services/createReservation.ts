@@ -79,10 +79,10 @@ export async function createReservation(values: IFormInput, _: FormData) {
       status: RESERVATION_STATUS.PENDING,
       totalPrice: totalPrice,
       discount: 0,
-      optionReservations: {
+      OptionReservation: {
         create: optionReservationsData,
       },
-      discoveryMethods: {
+      DiscoveryMethodReservation: {
         create: discoveryMethodsData,
       },
     },

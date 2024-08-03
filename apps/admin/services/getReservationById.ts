@@ -9,10 +9,10 @@ export default async function getReservationById(reservationId: number) {
       reservationId,
     },
     include: {
-      discoveryMethods: true,
-      optionReservations: {
+      DiscoveryMethodReservation: true,
+      OptionReservation: {
         include: {
-          option: true,
+          Option: true,
         },
       },
     },
