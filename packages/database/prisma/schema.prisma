@@ -141,18 +141,18 @@ model Service {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
 
-  OptionService   OptionService[]
-  Reservation     Reservation[]
-  UnavailableTime UnavailableTime[]
+  OptionService       OptionService[]
+  Reservation         Reservation[]
+  UnavailableDateTime UnavailableDateTime[]
 
   @@map("services")
 }
 
-model UnavailableTime {
-  unavailableTimeId Int      @id @default(autoincrement()) @map("unavailable_time_id")
-  serviceId         Int?     @map("service_id")
-  startDateTime     DateTime @map("start_date_time") @db.Timestamptz(6)
-  endDateTime       DateTime @map("end_date_time") @db.Timestamptz(6)
+model UnavailableDateTime {
+  unavailableDateTimeId Int      @id @default(autoincrement()) @map("unavailable_date_time_id")
+  serviceId             Int?     @map("service_id")
+  startDateTime         DateTime @map("start_date_time") @db.Timestamptz(6)
+  endDateTime           DateTime @map("end_date_time") @db.Timestamptz(6)
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
@@ -161,7 +161,7 @@ model UnavailableTime {
 
   @@index([serviceId])
   @@index([startDateTime, endDateTime])
-  @@map("unavailable_times")
+  @@map("unavailable_date_times")
 }
 
 enum ReservationStatus {

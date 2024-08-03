@@ -9,12 +9,9 @@ import Options from "@/app/components/reserve/Options";
 import Participants from "@/app/components/reserve/Participants";
 import Time from "@/app/components/reserve/Time";
 import type { OptionsServicesType } from "@/app/services/getOptionsServices";
+import type { UnavailableDateTimeType } from "@/app/services/getUnavailableDateTimes";
 import type { IFormInput } from "@/app/types/IFormInput";
-import type {
-  DiscoveryMethod as IDiscoveryMethod,
-  Option,
-  OptionService,
-} from "@prisma/client";
+import type { DiscoveryMethod as IDiscoveryMethod } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { memo, useCallback, useEffect, useMemo } from "react";
 import { type SubmitHandler, useFormContext, useWatch } from "react-hook-form";
@@ -23,6 +20,7 @@ type ReservationFormProps = {
   minDate: Date;
   optionsServices: OptionsServicesType;
   discoveryMethods: IDiscoveryMethod[];
+  unavailableDateTimes: UnavailableDateTimeType;
 };
 
 const MemoizedCalendar = memo(Calendar);
@@ -37,6 +35,7 @@ export default function ReservationForm({
   minDate,
   optionsServices,
   discoveryMethods,
+  unavailableDateTimes,
 }: ReservationFormProps) {
   const methods = useFormContext<IFormInput>();
   const router = useRouter();
@@ -114,7 +113,7 @@ export default function ReservationForm({
         <MemoizedCalendar minDate={minDate} />
       </div>
       <div className="col-span-1 mx-auto flex w-full max-w-4xl flex-col gap-8 lg:col-span-2">
-        <MemoizedTime />
+        <MemoizedTime unavailableDateTimes={unavailableDateTimes} />
         <MemoizedParticipants />
         <MemoizedOptions optionsServices={optionsServices} />
         <MemoizedCustomer />

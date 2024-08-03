@@ -1,8 +1,14 @@
-import { format, isEqual, set } from "date-fns";
+import type { UnavailableDateTimeType } from "@/app/services/getUnavailableDateTimes";
+import { format, isEqual, isWithinInterval, set } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 import { useEffect, useState } from "react";
 import { useController, useFormContext } from "react-hook-form";
 
-export default function Time() {
+type TimeProps = {
+  unavailableDateTimes: UnavailableDateTimeType;
+};
+
+export default function Time({ unavailableDateTimes }: TimeProps) {
   const { control, resetField } = useFormContext();
 
   const { field: startDateTime } = useController({
@@ -41,7 +47,6 @@ export default function Time() {
         }
         const { options } = await optionsRes.json();
         const { reservations } = await reservationsRes.json();
-        console.log(reservations);
 
         setOptionCount(options);
         setTotalReservationCount(Number.parseInt(reservations));
@@ -77,6 +82,20 @@ export default function Time() {
     if (isLoading) return <span className="text-2xl text-gray-400">-</span>;
     if (hasError) return <span className="text-2xl text-yellow-500">!</span>;
 
+    const isUnavailable = unavailableDateTimes.some((unavailableDateTime) =>
+      isWithinInterval(startDateTime.value, {
+        start: toZonedTime(
+          new Date(unavailableDateTime.startDateTime),
+          "Asia/Tokyo",
+        ),
+        end: toZonedTime(
+          new Date(unavailableDateTime.endDateTime),
+          "Asia/Tokyo",
+        ),
+      }),
+    );
+    if (isUnavailable) return <span className="cursor-none text-2xl">×</span>;
+
     const availableCount = getAvailableCount();
     if (availableCount >= 3)
       return <span className="text-2xl text-red-500">◎</span>;
@@ -110,7 +129,20 @@ export default function Time() {
         <div className="col-span-2">空き状況</div>
       </div>
       {dateTimes.map((dateTime) => {
-        const isDisabled = isLoading || hasError || getAvailableCount() <= 0;
+        const isUnavailable = unavailableDateTimes.some((unavailableDateTime) =>
+          isWithinInterval(dateTime, {
+            start: toZonedTime(
+              new Date(unavailableDateTime.startDateTime),
+              "Asia/Tokyo",
+            ),
+            end: toZonedTime(
+              new Date(unavailableDateTime.endDateTime),
+              "Asia/Tokyo",
+            ),
+          }),
+        );
+        const isDisabled =
+          isLoading || hasError || isUnavailable || getAvailableCount() <= 0;
         const isSelected =
           startDateTime.value && isEqual(startDateTime.value, dateTime);
         return (

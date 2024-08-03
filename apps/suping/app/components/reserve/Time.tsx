@@ -1,9 +1,15 @@
 import { NEXT_PUBLIC_SERVICE_NAME } from "@/app/consts/consts";
-import { addHours, format, isEqual, set } from "date-fns";
+import type { UnavailableDateTimeType } from "@/app/services/getUnavailableDateTimes";
+import { addHours, format, isEqual, isWithinInterval, set } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 import { useCallback, useEffect, useState } from "react";
 import { useController, useFormContext } from "react-hook-form";
 
-export default function Time() {
+type TimeProps = {
+  unavailableDateTimes: UnavailableDateTimeType;
+};
+
+export default function Time({ unavailableDateTimes }: TimeProps) {
   const { control, setValue, resetField } = useFormContext();
 
   const { field: startDateTime } = useController({
@@ -33,6 +39,7 @@ export default function Time() {
         throw new Error("Failed to fetch reservations");
       }
       const { reservations } = await res.json();
+
       setReservations(reservations);
     } catch (error) {
       console.error("Error fetching reservations:", error);
@@ -70,6 +77,21 @@ export default function Time() {
   const getReservationStatus = (dateTime: Date) => {
     if (isLoading) return <span className="text-2xl text-gray-400">-</span>;
     if (hasError) return <span className="text-2xl text-yellow-500">!</span>;
+
+    const isUnavailable = unavailableDateTimes.some((unavailableDateTime) =>
+      isWithinInterval(startDateTime.value, {
+        start: toZonedTime(
+          new Date(unavailableDateTime.startDateTime),
+          "Asia/Tokyo",
+        ),
+        end: toZonedTime(
+          new Date(unavailableDateTime.endDateTime),
+          "Asia/Tokyo",
+        ),
+      }),
+    );
+    if (isUnavailable) return <span className="cursor-none text-2xl">×</span>;
+
     const isReserved = reservations.some((reservation) =>
       isEqual(new Date(reservation.startDateTime), dateTime),
     );
@@ -90,10 +112,23 @@ export default function Time() {
         <div className="col-span-2">空き状況</div>
       </div>
       {dateTimes.map((dateTime) => {
+        const isUnavailable = unavailableDateTimes.some((unavailableDateTime) =>
+          isWithinInterval(dateTime, {
+            start: toZonedTime(
+              new Date(unavailableDateTime.startDateTime),
+              "Asia/Tokyo",
+            ),
+            end: toZonedTime(
+              new Date(unavailableDateTime.endDateTime),
+              "Asia/Tokyo",
+            ),
+          }),
+        );
+
         const isReserved = reservations.some((reservation) =>
           isEqual(new Date(reservation.startDateTime), dateTime),
         );
-        const isDisabled = isLoading || hasError || isReserved;
+        const isDisabled = isLoading || hasError || isReserved || isUnavailable;
         const isSelected =
           startDateTime.value && isEqual(startDateTime.value, dateTime);
         return (
