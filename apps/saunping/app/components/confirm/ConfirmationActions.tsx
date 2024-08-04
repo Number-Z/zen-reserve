@@ -15,7 +15,7 @@ export default function ConfirmationActions() {
   const [isAgreed, setIsAgreed] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  const { getValues, reset } = useFormContext<IFormInput>();
+  const { getValues } = useFormContext<IFormInput>();
   const values = getValues();
   const createReservationWithValues = createReservation.bind(null, values);
 
@@ -23,7 +23,6 @@ export default function ConfirmationActions() {
     startTransition(async () => {
       try {
         await createReservationWithValues(formData);
-        reset();
         router.push("/complete");
       } catch (error) {
         console.error(error);
