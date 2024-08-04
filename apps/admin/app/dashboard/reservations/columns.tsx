@@ -5,6 +5,7 @@ import { getStatusString } from "@/lib/utils";
 import type { ReservationsType } from "@/services/getReservations";
 import type { ColumnDef } from "@tanstack/react-table";
 import { differenceInHours, format } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 import { Pencil } from "lucide-react";
 import Link from "next/link";
 
@@ -45,14 +46,22 @@ export const columns: ColumnDef<ReservationsType[number]>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="開始日時" />
     ),
-    cell: (info) => format(info.row.original.startDateTime, "yyyy/MM/dd HH:mm"),
+    cell: (info) =>
+      format(
+        toZonedTime(info.row.original.startDateTime, "Asia/Tokyo"),
+        "yyyy/MM/dd HH:mm",
+      ),
   },
   {
     accessorKey: "endDateTime",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="終了日時" />
     ),
-    cell: (info) => format(info.row.original.endDateTime, "yyyy/MM/dd HH:mm"),
+    cell: (info) =>
+      format(
+        toZonedTime(info.row.original.endDateTime, "Asia/Tokyo"),
+        "yyyy/MM/dd HH:mm",
+      ),
   },
   {
     accessorKey: "duration",

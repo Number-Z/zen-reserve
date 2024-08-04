@@ -22,7 +22,7 @@ export default async function Page() {
         <CardHeader>
           <CardTitle>予約一覧</CardTitle>
         </CardHeader>
-        <CardContent className="pl-2">
+        <CardContent>
           <DataTable columns={columns} data={reservations} />
         </CardContent>
       </Card>

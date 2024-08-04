@@ -52,7 +52,7 @@ export default function CalendarView({ reservations }: CalendarViewProps) {
         <CardHeader>
           <CardTitle>予約カレンダー</CardTitle>
         </CardHeader>
-        <CardContent className="pl-2">
+        <CardContent>
           <FullCalendar
             height="auto"
             locale={jaLocale}
