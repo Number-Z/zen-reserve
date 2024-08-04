@@ -3,6 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getStatusString } from "@/lib/utils";
 import type { ReservationsType } from "@/services/getReservations";
+import type { UnavailableDateTimeType } from "@/services/getUnavailableDateTimes";
 import jaLocale from "@fullcalendar/core/locales/ja";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import FullCalendar from "@fullcalendar/react";
@@ -12,6 +13,7 @@ import { useRouter } from "next/navigation";
 
 type CalendarViewProps = {
   reservations: ReservationsType;
+  unavailableDateTimes: UnavailableDateTimeType;
 };
 
 const getColor = (serviceName: string) => {
@@ -34,17 +36,35 @@ const getTextColor = (instructorId: number | undefined) => {
   return "#f00";
 };
 
-export default function CalendarView({ reservations }: CalendarViewProps) {
+export default function CalendarView({
+  reservations,
+  unavailableDateTimes,
+}: CalendarViewProps) {
   const router = useRouter();
 
-  const events = reservations.map((reservation) => ({
-    id: reservation.reservationId.toString(),
-    title: `${reservation.lastName} ${reservation.firstName} (${getStatusString(reservation.status)})`,
-    start: toZonedTime(reservation.startDateTime, "Asia/Tokyo"),
-    end: toZonedTime(reservation.endDateTime, "Asia/Tokyo"),
-    color: getColor(reservation.Service?.name ?? ""),
-    textColor: getTextColor(reservation.Instructor?.instructorId),
-  }));
+  const events = [];
+  events.push(
+    ...reservations.map((reservation) => ({
+      id: reservation.reservationId.toString(),
+      type: "reservation",
+      title: `${reservation.lastName} ${reservation.firstName} (${getStatusString(reservation.status)})`,
+      start: toZonedTime(reservation.startDateTime, "Asia/Tokyo"),
+      end: toZonedTime(reservation.endDateTime, "Asia/Tokyo"),
+      color: getColor(reservation.Service?.name ?? ""),
+      textColor: getTextColor(reservation.Instructor?.instructorId),
+    })),
+  );
+  events.push(
+    ...unavailableDateTimes.map((unavailableDateTime) => ({
+      id: unavailableDateTime.unavailableDateTimeId.toString(),
+      type: "unavailableDateTime",
+      title: "予約停止",
+      start: toZonedTime(unavailableDateTime.startDateTime, "Asia/Tokyo"),
+      end: toZonedTime(unavailableDateTime.endDateTime, "Asia/Tokyo"),
+      color: "#000000",
+      textColor: "#fff",
+    })),
+  );
 
   return (
     <div className="flex h-full flex-col gap-4">
@@ -59,7 +79,16 @@ export default function CalendarView({ reservations }: CalendarViewProps) {
             plugins={[dayGridPlugin, timeGridPlugin]}
             events={events}
             eventClick={(info) => {
-              router.push(`/dashboard/reservations/${info.event.id}`);
+              switch (info.event.extendedProps.type) {
+                case "reservation":
+                  router.push(`/dashboard/reservations/${info.event.id}`);
+                  break;
+                case "unavailableDateTime":
+                  router.push(
+                    `/dashboard/unavailable-date-times/${info.event.id}`,
+                  );
+                  break;
+              }
             }}
             headerToolbar={{
               left: "prev,next today",
