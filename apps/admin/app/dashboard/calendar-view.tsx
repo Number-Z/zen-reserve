@@ -62,7 +62,7 @@ export default function CalendarView({
     ...unavailableDateTimes.map((unavailableDateTime) => ({
       id: unavailableDateTime.unavailableDateTimeId.toString(),
       type: "unavailableDateTime",
-      title: "予約停止",
+      title: `${unavailableDateTime.Service?.name ?? "全サービス"} 予約停止`,
       start: toZonedTime(unavailableDateTime.startDateTime, "Asia/Tokyo"),
       end: toZonedTime(unavailableDateTime.endDateTime, "Asia/Tokyo"),
       color: "#000000",
