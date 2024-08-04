@@ -15,6 +15,11 @@ export default async function getReservationById(reservationId: number) {
           Option: true,
         },
       },
+      InstructorReservation: {
+        include: {
+          Instructor: true,
+        },
+      },
     },
   });
   return reservation;

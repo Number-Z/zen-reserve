@@ -19,7 +19,11 @@ export default async function getReservations({
       OR: statuses.map((status) => ({ status })),
     },
     include: {
-      Instructor: true,
+      InstructorReservation: {
+        include: {
+          Instructor: true,
+        },
+      },
       Service: true,
     },
   });

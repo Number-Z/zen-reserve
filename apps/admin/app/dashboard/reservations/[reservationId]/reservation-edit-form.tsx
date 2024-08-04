@@ -51,7 +51,8 @@ export default function ReservationEditForm({
     resolver: zodResolver(reservationSchema),
     defaultValues: {
       reservationId: reservation.reservationId,
-      serviceId: reservation.serviceId,
+      // biome-ignore lint/style/noNonNullAssertion: <explanation>
+      serviceId: reservation.serviceId!,
       startDateTime: reservation.startDateTime,
       endDateTime: reservation.endDateTime,
       customer: {
@@ -64,7 +65,9 @@ export default function ReservationEditForm({
         otherInfo: reservation.otherInfo ?? "",
       },
       status: reservation.status,
-      instructorId: reservation.instructorId ?? 0,
+      instructorId: reservation.InstructorReservation.map(
+        (instructor) => instructor.instructorId,
+      ),
       discount: reservation.discount,
       totalPrice: reservation.totalPrice,
       discoveryMethods: reservation.DiscoveryMethodReservation.map(

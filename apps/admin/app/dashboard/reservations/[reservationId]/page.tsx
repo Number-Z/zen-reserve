@@ -24,7 +24,8 @@ export default async function Page({
 
   const instructors = await getInstructors();
   const discoveryMethods = await getDiscoveryMethods();
-  const optionsServices = await getOptionsServices(reservation.serviceId);
+  // biome-ignore lint/style/noNonNullAssertion: <explanation>
+  const optionsServices = await getOptionsServices(reservation.serviceId!);
 
   return (
     <div className="flex h-full flex-col gap-4">

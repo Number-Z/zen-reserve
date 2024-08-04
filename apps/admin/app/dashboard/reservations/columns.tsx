@@ -120,7 +120,10 @@ export const columns: ColumnDef<ReservationsType[number]>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="インストラクター" />
     ),
-    cell: (info) => info.row.original.Instructor?.name ?? "未アサイン",
+    cell: (info) =>
+      info.row.original.InstructorReservation.map(
+        (instructorReservation) => instructorReservation.Instructor?.name,
+      ).join(", ") || "未アサイン",
   },
   {
     accessorKey: "edit",

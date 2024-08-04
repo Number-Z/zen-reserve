@@ -118,29 +118,48 @@ export default function Details({
           name="instructorId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>インストラクター</FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value?.toString() ?? ""}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="0">未アサイン</SelectItem>
-                  {instructors.map((instructor) => (
-                    <SelectItem
-                      key={instructor.instructorId}
-                      value={instructor.instructorId.toString()}
-                    >
-                      {instructor.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormDescription />
+              <div className="mb-4">
+                <FormLabel>インストラクター</FormLabel>
+              </div>
+              {instructors.map((instructor) => (
+                <FormField
+                  key={instructor.name}
+                  control={form.control}
+                  name="instructorId"
+                  render={({ field }) => {
+                    return (
+                      <FormItem
+                        key={instructor.name}
+                        className="flex flex-row items-start space-x-3 space-y-0"
+                      >
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value?.includes(
+                              instructor.instructorId,
+                            )}
+                            onCheckedChange={(checked) => {
+                              return checked
+                                ? field.onChange([
+                                    ...(field.value || []),
+                                    instructor.instructorId,
+                                  ])
+                                : field.onChange(
+                                    field.value?.filter(
+                                      (value) =>
+                                        value !== instructor.instructorId,
+                                    ),
+                                  );
+                            }}
+                          />
+                        </FormControl>
+                        <FormLabel className="font-normal">
+                          {instructor.name}
+                        </FormLabel>
+                      </FormItem>
+                    );
+                  }}
+                />
+              ))}
               <FormMessage />
             </FormItem>
           )}
@@ -201,7 +220,7 @@ export default function Details({
                             onCheckedChange={(checked) => {
                               return checked
                                 ? field.onChange([
-                                    ...field.value,
+                                    ...(field.value || []),
                                     discoveryMethod.name,
                                   ])
                                 : field.onChange(

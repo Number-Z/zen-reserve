@@ -29,8 +29,8 @@ const getColor = (serviceName: string) => {
   }
 };
 
-const getTextColor = (instructorId: number | undefined) => {
-  if (instructorId) {
+const getTextColor = (instructorIds: number[]) => {
+  if (instructorIds.length > 0) {
     return "#fff";
   }
   return "#f00";
@@ -51,7 +51,11 @@ export default function CalendarView({
       start: toZonedTime(reservation.startDateTime, "Asia/Tokyo"),
       end: toZonedTime(reservation.endDateTime, "Asia/Tokyo"),
       color: getColor(reservation.Service?.name ?? ""),
-      textColor: getTextColor(reservation.Instructor?.instructorId),
+      textColor: getTextColor(
+        reservation.InstructorReservation.map(
+          (instructorReservation) => instructorReservation.instructorId,
+        ),
+      ),
     })),
   );
   events.push(
