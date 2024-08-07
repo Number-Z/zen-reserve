@@ -21,7 +21,10 @@ export async function updateReservation(reservation: ReservationSchemaType) {
   // 現在の予約情報を取得
   const currentReservation = await prisma.reservation.findUnique({
     where: { reservationId: reservation.reservationId },
-    include: { OptionReservation: { include: { Option: true } } },
+    include: {
+      OptionReservation: { include: { Option: true } },
+      InstructorReservation: { include: { Instructor: true } },
+    },
   });
 
   if (!currentReservation) {
@@ -87,6 +90,11 @@ export async function updateReservation(reservation: ReservationSchemaType) {
         },
       },
       Service: true,
+      InstructorReservation: {
+        include: {
+          Instructor: true,
+        },
+      },
     },
   });
 
@@ -162,6 +170,39 @@ export async function updateReservation(reservation: ReservationSchemaType) {
       reservationDetails: reservationDetails,
       options: options,
     });
+  }
+
+  // 追加・変更されたインストラクターへのメール送信(削除されたインストラクターは除外)
+  const currentInstructorIds =
+    currentReservation.InstructorReservation?.map((ir) => ir.instructorId) ??
+    [];
+  const updatedInstructorIds =
+    updatedReservation.InstructorReservation?.map((ir) => ir.instructorId) ??
+    [];
+  const newInstructorIds = updatedInstructorIds.filter(
+    (id) => !currentInstructorIds.includes(id),
+  );
+  const deletedInstructorIds = currentInstructorIds.filter(
+    (id) => !updatedInstructorIds.includes(id),
+  );
+  const changedInstructorIds = newInstructorIds.concat(
+    deletedInstructorIds.filter((id) => updatedInstructorIds.includes(id)),
+  );
+  for (const instructorId of changedInstructorIds) {
+    const instructor = updatedReservation.InstructorReservation.find(
+      (ir) => ir.instructorId === instructorId,
+    )?.Instructor;
+
+    if (instructor?.email) {
+      await sendEmail({
+        from,
+        to: updatedReservation.email,
+        status: updatedReservation.status,
+        serviceName: updatedReservation.Service?.name,
+        reservationDetails: reservationDetails,
+        options: options,
+      });
+    }
   }
 
   redirect("/dashboard/reservations");
