@@ -30,6 +30,12 @@ export function Nav({
       >
         予約停止日時一覧
       </Link>
+      <Link
+        href="/dashboard/instructors"
+        className="font-medium text-muted-foreground text-sm transition-colors hover:text-primary"
+      >
+        インストラクター一覧
+      </Link>
       <form action={logOut}>
         <button
           type="submit"
