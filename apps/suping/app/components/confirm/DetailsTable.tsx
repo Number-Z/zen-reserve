@@ -16,6 +16,18 @@ export default function DetailsTable() {
   const values = getValues();
 
   const rows = [
+    {
+      label: "氏名",
+      value: `${values.customer.lastName} ${values.customer.firstName}`,
+    },
+    {
+      label: "メールアドレス",
+      value: values.customer.email,
+    },
+    {
+      label: "電話番号",
+      value: values.customer.phoneNumber,
+    },
     // biome-ignore lint/style/noNonNullAssertion: バリデーション済みのため
     { label: "予約日", value: format(values.startDateTime!, "yyyy年MM月dd日") },
     {

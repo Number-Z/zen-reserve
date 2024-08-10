@@ -12,6 +12,7 @@ import {
 
 type CompleteProps = {
   serviceName: string;
+  customer: { label: string; value: string }[];
   reservationDetails: { label: string; value: string }[];
   options: { label: string; value: string }[];
 };
@@ -31,6 +32,7 @@ const renderTableRow = (label: string, value: string) => (
 
 export default function ReservationConfirmed({
   serviceName,
+  customer,
   reservationDetails,
   options,
 }: CompleteProps) {
@@ -62,6 +64,12 @@ export default function ReservationConfirmed({
                   <br />
                   なお、予約変更、キャンセルにつきましては公式LINEよりお問い合わせください。
                 </Text>
+                <h2 className="font-bold text-gray-700 text-lg">予約者情報</h2>
+                <table className="mb-5 w-full border-collapse">
+                  {customer.map(({ label, value }) =>
+                    renderTableRow(label, value),
+                  )}
+                </table>
                 <h2 className="font-bold text-gray-700 text-lg">予約詳細</h2>
                 <table className="mb-5 w-full border-collapse">
                   {reservationDetails.map(({ label, value }) =>

@@ -37,6 +37,7 @@ type SendEmailParams = {
   to: string;
   serviceName: string;
   status: keyof typeof RESERVATION_STATUS;
+  customer: { label: string; value: string }[];
   reservationDetails: { label: string; value: string }[];
   options: { label: string; value: string }[];
 };
@@ -46,6 +47,7 @@ export async function sendEmail({
   to,
   serviceName,
   status,
+  customer,
   reservationDetails,
   options,
 }: SendEmailParams) {
@@ -58,6 +60,7 @@ export async function sendEmail({
         html: render(
           createElement(ReservationConfirmed, {
             serviceName,
+            customer,
             reservationDetails,
             options,
           }),
@@ -72,6 +75,7 @@ export async function sendEmail({
         html: render(
           createElement(ReservationCanceled, {
             serviceName,
+            customer,
             reservationDetails,
             options,
           }),
@@ -86,6 +90,7 @@ export async function sendEmail({
         html: render(
           createElement(ReservationCanceled, {
             serviceName,
+            customer,
             reservationDetails,
             options,
           }),

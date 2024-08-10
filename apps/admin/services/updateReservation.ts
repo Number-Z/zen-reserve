@@ -102,6 +102,14 @@ export async function updateReservation(reservation: ReservationSchemaType) {
     throw new Error("Service not found");
   }
 
+  // 予約者情報の配列
+  const customer = [
+    { label: "姓", value: updatedReservation.lastName },
+    { label: "名", value: updatedReservation.firstName },
+    { label: "メールアドレス", value: updatedReservation.email },
+    { label: "電話番号", value: updatedReservation.phoneNumber },
+  ];
+
   // 予約詳細の配列
   const reservationDetails = [
     { label: "予約ID", value: updatedReservation.reservationId.toString() },
@@ -167,6 +175,7 @@ export async function updateReservation(reservation: ReservationSchemaType) {
       to: updatedReservation.email,
       status: updatedReservation.status,
       serviceName: updatedReservation.Service?.name,
+      customer: customer,
       reservationDetails: reservationDetails,
       options: options,
     });
@@ -199,6 +208,7 @@ export async function updateReservation(reservation: ReservationSchemaType) {
         to: instructor.email,
         status: updatedReservation.status,
         serviceName: updatedReservation.Service?.name,
+        customer: customer,
         reservationDetails: reservationDetails,
         options: options,
       });
