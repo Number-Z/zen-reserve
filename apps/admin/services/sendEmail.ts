@@ -1,8 +1,10 @@
 "use server";
 
 import type { RESERVATION_STATUS } from "@/consts/status";
-import ReservationCanceled from "@/emails/ReservationCanceled";
-import ReservationConfirmed from "@/emails/ReservationConfirmed";
+import ReservationCanceledForCustomer from "@/emails/customer/ReservationCanceled";
+import ReservationConfirmedForCustomer from "@/emails/customer/ReservationConfirmed";
+import ReservationCanceledForInstructor from "@/emails/instructor/ReservationCanceled";
+import ReservationConfirmedForInstructor from "@/emails/instructor/ReservationConfirmed";
 import { render } from "@react-email/components";
 import nodemailer from "nodemailer";
 import { createElement } from "react";
@@ -35,6 +37,7 @@ export const sendMail = async (data: EmailPayload) => {
 type SendEmailParams = {
   from: string;
   to: string;
+  name?: string;
   serviceName: string;
   status: keyof typeof RESERVATION_STATUS;
   customer: { label: string; value: string }[];
@@ -42,7 +45,7 @@ type SendEmailParams = {
   options: { label: string; value: string }[];
 };
 
-export async function sendEmail({
+export async function sendEmailToCustomer({
   from,
   to,
   serviceName,
@@ -58,7 +61,7 @@ export async function sendEmail({
         to,
         subject: `予約確定 - ${serviceName}`,
         html: render(
-          createElement(ReservationConfirmed, {
+          createElement(ReservationConfirmedForCustomer, {
             serviceName,
             customer,
             reservationDetails,
@@ -73,7 +76,7 @@ export async function sendEmail({
         to,
         subject: `予約キャンセル - ${serviceName}`,
         html: render(
-          createElement(ReservationCanceled, {
+          createElement(ReservationCanceledForCustomer, {
             serviceName,
             customer,
             reservationDetails,
@@ -83,18 +86,54 @@ export async function sendEmail({
       });
       break;
     default:
+      break;
+  }
+}
+
+export async function sendEmailToInstructor({
+  from,
+  to,
+  name,
+  serviceName,
+  status,
+  customer,
+  reservationDetails,
+  options,
+}: SendEmailParams) {
+  switch (status) {
+    case "CONFIRMED":
       await sendMail({
         from,
         to,
-        subject: `予約更新 - ${serviceName}`,
+        subject: `インストラクター通知 - ${serviceName}`,
         html: render(
-          createElement(ReservationCanceled, {
+          createElement(ReservationConfirmedForInstructor, {
             serviceName,
+            name: name || "",
             customer,
             reservationDetails,
             options,
           }),
         ),
       });
+      break;
+    case "CANCELED":
+      await sendMail({
+        from,
+        to,
+        subject: `予約キャンセル - ${serviceName}`,
+        html: render(
+          createElement(ReservationCanceledForInstructor, {
+            serviceName,
+            name: name || "",
+            customer,
+            reservationDetails,
+            options,
+          }),
+        ),
+      });
+      break;
+    default:
+      break;
   }
 }

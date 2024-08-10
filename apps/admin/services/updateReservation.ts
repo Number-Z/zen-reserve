@@ -3,7 +3,10 @@
 import { RESERVATION_STATUS } from "@/consts/status";
 import type { ReservationSchemaType } from "@/schemas/reservation";
 import getOptionsServices from "@/services/getOptionsServices";
-import { sendEmail } from "@/services/sendEmail";
+import {
+  sendEmailToCustomer,
+  sendEmailToInstructor,
+} from "@/services/sendEmail";
 import prisma from "@zen-reserve/database";
 import { format } from "date-fns";
 import { redirect } from "next/navigation";
@@ -170,7 +173,7 @@ export async function updateReservation(reservation: ReservationSchemaType) {
 
   // 予約リクエスト->確定時、キャンセル時メール送信
   if (shouldSendEmail(currentReservation.status, updatedReservation.status)) {
-    await sendEmail({
+    await sendEmailToCustomer({
       from,
       to: updatedReservation.email,
       status: updatedReservation.status,
@@ -201,11 +204,11 @@ export async function updateReservation(reservation: ReservationSchemaType) {
     const instructor = updatedReservation.InstructorReservation.find(
       (ir) => ir.instructorId === instructorId,
     )?.Instructor;
-    console.log("instructor", instructor);
     if (instructor?.email) {
-      await sendEmail({
+      await sendEmailToInstructor({
         from,
         to: instructor.email,
+        name: instructor.name,
         status: updatedReservation.status,
         serviceName: updatedReservation.Service?.name,
         customer: customer,
