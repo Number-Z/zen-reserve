@@ -192,11 +192,11 @@ export async function updateReservation(reservation: ReservationSchemaType) {
     const instructor = updatedReservation.InstructorReservation.find(
       (ir) => ir.instructorId === instructorId,
     )?.Instructor;
-
+    console.log("instructor", instructor);
     if (instructor?.email) {
       await sendEmail({
         from,
-        to: updatedReservation.email,
+        to: instructor.email,
         status: updatedReservation.status,
         serviceName: updatedReservation.Service?.name,
         reservationDetails: reservationDetails,

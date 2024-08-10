@@ -79,6 +79,17 @@ export async function sendEmail({
       });
       break;
     default:
-      break;
+      await sendMail({
+        from,
+        to,
+        subject: `予約更新 - ${serviceName}`,
+        html: render(
+          createElement(ReservationCanceled, {
+            serviceName,
+            reservationDetails,
+            options,
+          }),
+        ),
+      });
   }
 }
