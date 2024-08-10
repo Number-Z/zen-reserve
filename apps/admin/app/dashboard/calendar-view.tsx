@@ -102,6 +102,8 @@ export default function CalendarView({
             initialView="dayGridMonth"
             nowIndicator={true}
             selectable={true}
+            firstDay={1}
+            showNonCurrentDates={false}
           />
         </CardContent>
       </Card>
