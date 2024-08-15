@@ -1,54 +1,80 @@
-import Link from "next/link";
-
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { logOut } from "@/lib/actions";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 export function Nav({
   className,
   ...props
 }: React.HTMLAttributes<HTMLElement>) {
+  const navItems = [
+    { href: "/dashboard/reservations", label: "予約一覧" },
+    { href: "/dashboard/options", label: "オプション一覧" },
+    { href: "/dashboard/unavailable-date-times", label: "予約停止日時一覧" },
+    { href: "/dashboard/instructors", label: "インストラクター一覧" },
+  ];
+
   return (
     <nav
-      className={cn("flex items-center space-x-4 lg:space-x-6", className)}
+      className={cn(
+        "flex w-full items-center justify-between space-x-4",
+        className,
+      )}
       {...props}
     >
-      <Link
-        href="/dashboard"
-        className="font-medium text-sm transition-colors hover:text-primary"
-      >
-        ダッシュボード
-      </Link>
-      <Link
-        href="/dashboard/reservations"
-        className="font-medium text-muted-foreground text-sm transition-colors hover:text-primary"
-      >
-        予約一覧
-      </Link>
-      <Link
-        href="/dashboard/options"
-        className="font-medium text-muted-foreground text-sm transition-colors hover:text-primary"
-      >
-        オプション一覧
-      </Link>
-      <Link
-        href="/dashboard/unavailable-date-times"
-        className="font-medium text-muted-foreground text-sm transition-colors hover:text-primary"
-      >
-        予約停止日時一覧
-      </Link>
-      <Link
-        href="/dashboard/instructors"
-        className="font-medium text-muted-foreground text-sm transition-colors hover:text-primary"
-      >
-        インストラクター一覧
-      </Link>
+      <section className="flex items-center space-x-4">
+        <Link
+          href="/dashboard"
+          className="font-medium text-sm transition-colors hover:text-primary"
+        >
+          カレンダー
+        </Link>
+
+        <div className="max-w-[200px] flex-grow md:hidden">
+          <Select>
+            <SelectTrigger>
+              <SelectValue placeholder="メニュー" />
+            </SelectTrigger>
+            <SelectContent>
+              {navItems.map((item) => (
+                <SelectItem key={item.href} value={item.href}>
+                  <Link href={item.href} className="block w-full">
+                    {item.label}
+                  </Link>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="hidden items-center space-x-4 md:flex lg:space-x-6">
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="font-medium text-muted-foreground text-sm transition-colors hover:text-primary"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </div>
+      </section>
+
       <form action={logOut}>
-        <button
+        <Button
           type="submit"
-          className="font-medium text-muted-foreground text-sm transition-colors hover:text-primary"
+          variant="secondary"
+          className="font-medium text-sm"
         >
           ログアウト
-        </button>
+        </Button>
       </form>
     </nav>
   );

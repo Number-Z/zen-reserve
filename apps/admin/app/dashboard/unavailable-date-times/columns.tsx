@@ -1,7 +1,7 @@
 "use client";
 
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
-import type { UnavailableDateTimeType } from "@/services/getUnavailableDateTimes";
+import type { UnavailableDateTimeType } from "@/services/unavailableDateTime/getUnavailableDateTimes";
 import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { toZonedTime } from "date-fns-tz";

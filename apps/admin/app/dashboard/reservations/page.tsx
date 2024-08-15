@@ -2,7 +2,7 @@ import { columns } from "@/app/dashboard/reservations/columns";
 import { DataTable } from "@/components/data-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RESERVATION_STATUS } from "@/consts/status";
-import getReservations from "@/services/getReservations";
+import getReservations from "@/services/reservations/getReservations";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;

@@ -1,6 +1,6 @@
 import InstructorEditForm from "@/app/dashboard/instructors/[instructorId]/instructor-edit-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import getInstructorById from "@/services/getInstructorById";
+import getInstructorById from "@/services/instructors/getInstructorById";
 import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";

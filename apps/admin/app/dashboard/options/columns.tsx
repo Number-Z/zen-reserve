@@ -1,7 +1,7 @@
 "use client";
 
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
-import type { OptionsServicesType } from "@/services/getOptionsServices";
+import type { OptionsServicesType } from "@/services/options/getOptionsServices";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Pencil } from "lucide-react";
 import Link from "next/link";

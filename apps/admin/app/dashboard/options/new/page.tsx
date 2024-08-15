@@ -1,6 +1,6 @@
 import OptionCreateForm from "@/app/dashboard/options/new/option-create-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import getServices from "@/services/getServices";
+import getServices from "@/services/common/getServices";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;

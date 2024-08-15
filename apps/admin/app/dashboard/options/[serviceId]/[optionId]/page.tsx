@@ -1,7 +1,7 @@
 import OptionEditForm from "@/app/dashboard/options/[serviceId]/[optionId]/option-edit-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import getOptionServiceById from "@/services/getOptionServiceById";
-import getServices from "@/services/getServices";
+import getServices from "@/services/common/getServices";
+import getOptionServiceById from "@/services/options/getOptionServiceById";
 import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";

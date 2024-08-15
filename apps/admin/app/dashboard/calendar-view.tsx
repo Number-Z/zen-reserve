@@ -2,8 +2,8 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getStatusString } from "@/lib/utils";
-import type { ReservationsType } from "@/services/getReservations";
-import type { UnavailableDateTimeType } from "@/services/getUnavailableDateTimes";
+import type { ReservationsType } from "@/services/reservations/getReservations";
+import type { UnavailableDateTimeType } from "@/services/unavailableDateTime/getUnavailableDateTimes";
 import jaLocale from "@fullcalendar/core/locales/ja";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import FullCalendar from "@fullcalendar/react";

@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import type { ReservationSchemaType } from "@/schemas/reservation";
-import type { OptionsServiceType } from "@/services/getOptionsService";
+import type { OptionsServiceType } from "@/services/reservations/getOptionsService";
 import { useFormContext } from "react-hook-form";
 
 type DetailsProps = {

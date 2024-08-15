@@ -17,7 +17,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { DISPLAY_TYPE } from "@/consts/displayType";
 import type { OptionServiceSchemaType } from "@/schemas/optionService";
-import type { ServicesType } from "@/services/getServices";
+import type { ServicesType } from "@/services/common/getServices";
 import { useFormContext } from "react-hook-form";
 
 type OptionProps = {

@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { UnavailableDateTimeSchemaType } from "@/schemas/unavailableDateTime";
-import type { ServicesType } from "@/services/getServices";
+import type { ServicesType } from "@/services/common/getServices";
 import { useFormContext } from "react-hook-form";
 
 type UnavailableDateTimeProps = {

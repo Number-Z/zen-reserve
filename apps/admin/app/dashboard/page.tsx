@@ -1,7 +1,7 @@
 import CalendarView from "@/app/dashboard/calendar-view";
 import { RESERVATION_STATUS } from "@/consts/status";
-import getReservations from "@/services/getReservations";
-import { getUnavailableDateTimes } from "@/services/getUnavailableDateTimes";
+import getReservations from "@/services/reservations/getReservations";
+import { getUnavailableDateTimes } from "@/services/unavailableDateTime/getUnavailableDateTimes";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;

@@ -1,4 +1,3 @@
-import { DateTimePicker } from "@/components/ui/datetime-picker";
 import {
   FormControl,
   FormDescription,
@@ -17,8 +16,8 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { DISPLAY_TYPE } from "@/consts/displayType";
-import type { OptionSchemaType } from "@/schemas/option";
-import type { ServicesType } from "@/services/getServices";
+import type { OptionServiceSchemaType } from "@/schemas/optionService";
+import type { ServicesType } from "@/services/common/getServices";
 import { useFormContext } from "react-hook-form";
 
 type OptionProps = {
@@ -26,7 +25,7 @@ type OptionProps = {
 };
 
 export default function Option({ services }: OptionProps) {
-  const form = useFormContext<OptionSchemaType>();
+  const form = useFormContext<OptionServiceSchemaType>();
 
   return (
     <>

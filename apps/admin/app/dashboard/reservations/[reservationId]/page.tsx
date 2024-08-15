@@ -1,9 +1,9 @@
 import ReservationEditForm from "@/app/dashboard/reservations/[reservationId]/reservation-edit-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import getDiscoveryMethods from "@/services/getDiscoveryMethods";
-import getInstructors from "@/services/getInstructors";
-import getOptionsService from "@/services/getOptionsService";
-import getReservationById from "@/services/getReservationById";
+import getInstructors from "@/services/instructors/getInstructors";
+import getDiscoveryMethods from "@/services/reservations/getDiscoveryMethods";
+import getOptionsService from "@/services/reservations/getOptionsService";
+import getReservationById from "@/services/reservations/getReservationById";
 import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";

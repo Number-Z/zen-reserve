@@ -1,7 +1,7 @@
 import UnavailableDateTimeEditForm from "@/app/dashboard/unavailable-date-times/[unavailableDateTimeId]/unavailable-date-time-edit-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import getServices from "@/services/getServices";
-import getUnavailableDateTimeById from "@/services/getUnavailableDateTimeById";
+import getServices from "@/services/common/getServices";
+import getUnavailableDateTimeById from "@/services/unavailableDateTime/getUnavailableDateTimeById";
 import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";

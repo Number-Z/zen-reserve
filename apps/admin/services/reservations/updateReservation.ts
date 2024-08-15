@@ -2,11 +2,11 @@
 
 import { RESERVATION_STATUS } from "@/consts/status";
 import type { ReservationSchemaType } from "@/schemas/reservation";
-import getOptionsService from "@/services/getOptionsService";
 import {
   sendEmailToCustomer,
   sendEmailToInstructor,
-} from "@/services/sendEmail";
+} from "@/services/common/sendEmail";
+import getOptionsService from "@/services/reservations/getOptionsService";
 import prisma from "@zen-reserve/database";
 import { format } from "date-fns";
 import { redirect } from "next/navigation";

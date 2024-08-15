@@ -20,8 +20,8 @@ import {
 import { RESERVATION_STATUS } from "@/consts/status";
 import { getStatusString } from "@/lib/utils";
 import type { ReservationSchemaType } from "@/schemas/reservation";
-import type { DiscoveryMethodsType } from "@/services/getDiscoveryMethods";
-import type { InstructorsType } from "@/services/getInstructors";
+import type { InstructorsType } from "@/services/instructors/getInstructors";
+import type { DiscoveryMethodsType } from "@/services/reservations/getDiscoveryMethods";
 import { useEffect } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 

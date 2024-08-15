@@ -2,7 +2,7 @@
 
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { getStatusString } from "@/lib/utils";
-import type { ReservationsType } from "@/services/getReservations";
+import type { ReservationsType } from "@/services/reservations/getReservations";
 import type { ColumnDef } from "@tanstack/react-table";
 import { differenceInHours, format } from "date-fns";
 import { toZonedTime } from "date-fns-tz";

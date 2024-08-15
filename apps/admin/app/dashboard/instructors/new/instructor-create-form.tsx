@@ -7,7 +7,7 @@ import {
   type InstructorSchemaType,
   instructorSchema,
 } from "@/schemas/instructor";
-import { createInstructor } from "@/services/createInstructor";
+import { createInstructor } from "@/services/instructors/createInstructor";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";

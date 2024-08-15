@@ -9,11 +9,11 @@ import {
   type ReservationSchemaType,
   reservationSchema,
 } from "@/schemas/reservation";
-import type { DiscoveryMethodsType } from "@/services/getDiscoveryMethods";
-import type { InstructorsType } from "@/services/getInstructors";
-import type { OptionsServiceType } from "@/services/getOptionsService";
-import type { ReservationType } from "@/services/getReservationById";
-import { updateReservation } from "@/services/updateReservation";
+import type { InstructorsType } from "@/services/instructors/getInstructors";
+import type { DiscoveryMethodsType } from "@/services/reservations/getDiscoveryMethods";
+import type { OptionsServiceType } from "@/services/reservations/getOptionsService";
+import type { ReservationType } from "@/services/reservations/getReservationById";
+import { updateReservation } from "@/services/reservations/updateReservation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";

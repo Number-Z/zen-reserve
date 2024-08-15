@@ -1,6 +1,6 @@
 import { authConfig } from "@/auth.config";
 import { signInSchema } from "@/schemas/signIn";
-import { getAdminByEmail } from "@/services/getAdminByEmail";
+import { getAdminByEmail } from "@/services/auth/getAdminByEmail";
 import bcrypt from "bcrypt";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";

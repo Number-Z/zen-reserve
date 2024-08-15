@@ -7,8 +7,8 @@ import {
   type OptionServiceSchemaType,
   optionServiceSchema,
 } from "@/schemas/optionService";
-import createOptionService from "@/services/createOptionService";
-import type { ServicesType } from "@/services/getServices";
+import type { ServicesType } from "@/services/common/getServices";
+import createOptionService from "@/services/options/createOptionService";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";

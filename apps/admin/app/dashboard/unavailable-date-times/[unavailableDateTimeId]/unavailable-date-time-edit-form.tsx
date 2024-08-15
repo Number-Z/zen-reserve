@@ -7,9 +7,9 @@ import {
   type UnavailableDateTimeSchemaType,
   unavailableDateTimeSchema,
 } from "@/schemas/unavailableDateTime";
-import type { ServicesType } from "@/services/getServices";
-import type { UnavailableDateTimeType } from "@/services/getUnavailableDateTimeById";
-import { updateUnavailableDateTime } from "@/services/updateUnavailableDateTime";
+import type { ServicesType } from "@/services/common/getServices";
+import type { UnavailableDateTimeType } from "@/services/unavailableDateTime/getUnavailableDateTimeById";
+import { updateUnavailableDateTime } from "@/services/unavailableDateTime/updateUnavailableDateTime";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";

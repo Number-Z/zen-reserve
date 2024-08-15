@@ -2,7 +2,7 @@ import { columns } from "@/app/dashboard/instructors/columns";
 import { DataTable } from "@/components/data-table";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import getInstructors from "@/services/getInstructors";
+import getInstructors from "@/services/instructors/getInstructors";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";

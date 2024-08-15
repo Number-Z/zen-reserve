@@ -8,9 +8,9 @@ import {
   type OptionServiceSchemaType,
   optionServiceSchema,
 } from "@/schemas/optionService";
-import type { OptionServiceType } from "@/services/getOptionServiceById";
-import type { ServicesType } from "@/services/getServices";
-import updateOptionService from "@/services/updateOptionService";
+import type { ServicesType } from "@/services/common/getServices";
+import type { OptionServiceType } from "@/services/options/getOptionServiceById";
+import updateOptionService from "@/services/options/updateOptionService";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";

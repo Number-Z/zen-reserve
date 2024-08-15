@@ -12,7 +12,7 @@ export default function Layout({
           <Nav />
         </div>
       </div>
-      <main className="flex-1 space-y-4 p-8 pt-6">{children}</main>
+      <main className="flex-1 space-y-4 p-2 md:px-8 md:pt-6">{children}</main>
     </div>
   );
 }
