@@ -3,20 +3,22 @@
 import type { Prisma } from "@prisma/client";
 import prisma from "@zen-reserve/database";
 
-export default async function getOptionsServices(serviceId: number) {
+export default async function getOptionsServices() {
   const optionsServices = await prisma.optionService.findMany({
-    where: {
-      serviceId,
-    },
     include: {
       Option: true,
+      Service: true,
     },
-    orderBy: {
-      order: "asc",
-    },
+    orderBy: [
+      {
+        serviceId: "asc",
+      },
+      {
+        order: "asc",
+      },
+    ],
   });
-
-  return optionsServices.map((os) => os.Option);
+  return optionsServices;
 }
 
 export type OptionsServicesType = Prisma.PromiseReturnType<

@@ -2,7 +2,7 @@ import ReservationEditForm from "@/app/dashboard/reservations/[reservationId]/re
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import getDiscoveryMethods from "@/services/getDiscoveryMethods";
 import getInstructors from "@/services/getInstructors";
-import getOptionsServices from "@/services/getOptionsServices";
+import getOptionsService from "@/services/getOptionsService";
 import getReservationById from "@/services/getReservationById";
 import { redirect } from "next/navigation";
 
@@ -25,7 +25,7 @@ export default async function Page({
   const instructors = await getInstructors();
   const discoveryMethods = await getDiscoveryMethods();
   // biome-ignore lint/style/noNonNullAssertion: <explanation>
-  const optionsServices = await getOptionsServices(reservation.serviceId!);
+  const optionsService = await getOptionsService(reservation.serviceId!);
 
   return (
     <div className="flex h-full flex-col gap-4">
@@ -38,7 +38,7 @@ export default async function Page({
             reservation={reservation}
             instructors={instructors}
             discoveryMethods={discoveryMethods}
-            optionsServices={optionsServices}
+            optionsService={optionsService}
           />
         </CardContent>
       </Card>

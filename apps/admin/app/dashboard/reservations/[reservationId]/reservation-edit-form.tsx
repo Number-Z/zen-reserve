@@ -11,7 +11,7 @@ import {
 } from "@/schemas/reservation";
 import type { DiscoveryMethodsType } from "@/services/getDiscoveryMethods";
 import type { InstructorsType } from "@/services/getInstructors";
-import type { OptionsServicesType } from "@/services/getOptionsServices";
+import type { OptionsServiceType } from "@/services/getOptionsService";
 import type { ReservationType } from "@/services/getReservationById";
 import { updateReservation } from "@/services/updateReservation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,18 +23,18 @@ type ReservationEditFormProps = {
   reservation: Exclude<ReservationType, null>;
   instructors: InstructorsType;
   discoveryMethods: DiscoveryMethodsType;
-  optionsServices: OptionsServicesType;
+  optionsService: OptionsServiceType;
 };
 
 export default function ReservationEditForm({
   reservation,
   instructors,
   discoveryMethods,
-  optionsServices,
+  optionsService,
 }: ReservationEditFormProps) {
   const router = useRouter();
 
-  const defaultOptions = optionsServices.reduce(
+  const defaultOptions = optionsService.reduce(
     (acc, optionService) => {
       const optionReservation = reservation.OptionReservation.find(
         (optionReservation) =>
@@ -91,7 +91,7 @@ export default function ReservationEditForm({
           instructors={instructors}
           discoveryMethods={discoveryMethods}
         />
-        <Options optionsServices={optionsServices} />
+        <Options optionsService={optionsService} />
         <div className="flex justify-end">
           <Button
             type="button"

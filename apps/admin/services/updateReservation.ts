@@ -2,7 +2,7 @@
 
 import { RESERVATION_STATUS } from "@/consts/status";
 import type { ReservationSchemaType } from "@/schemas/reservation";
-import getOptionsServices from "@/services/getOptionsServices";
+import getOptionsService from "@/services/getOptionsService";
 import {
   sendEmailToCustomer,
   sendEmailToInstructor,
@@ -37,7 +37,7 @@ export async function updateReservation(reservation: ReservationSchemaType) {
   }
 
   // オプションを取得
-  const optionsServices = await getOptionsServices(reservation.serviceId);
+  const optionsServices = await getOptionsService(reservation.serviceId);
 
   // オプションの更新データを準備
   const optionReservationsData = Object.entries(reservation.options)

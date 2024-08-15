@@ -11,14 +11,14 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import type { ReservationSchemaType } from "@/schemas/reservation";
-import type { OptionsServicesType } from "@/services/getOptionsServices";
+import type { OptionsServiceType } from "@/services/getOptionsService";
 import { useFormContext } from "react-hook-form";
 
 type DetailsProps = {
-  optionsServices: OptionsServicesType;
+  optionsService: OptionsServiceType;
 };
 
-export default function Options({ optionsServices }: DetailsProps) {
+export default function Options({ optionsService }: DetailsProps) {
   const form = useFormContext<ReservationSchemaType>();
 
   return (
@@ -27,7 +27,7 @@ export default function Options({ optionsServices }: DetailsProps) {
         <CardTitle>オプション一覧</CardTitle>
       </CardHeader>
       <CardContent className="p-2">
-        {optionsServices.map((optionService) => (
+        {optionsService.map((optionService) => (
           <FormField
             key={optionService.optionId}
             control={form.control}

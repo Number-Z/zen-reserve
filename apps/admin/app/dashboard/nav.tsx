@@ -25,6 +25,12 @@ export function Nav({
         予約一覧
       </Link>
       <Link
+        href="/dashboard/options"
+        className="font-medium text-muted-foreground text-sm transition-colors hover:text-primary"
+      >
+        オプション一覧
+      </Link>
+      <Link
         href="/dashboard/unavailable-date-times"
         className="font-medium text-muted-foreground text-sm transition-colors hover:text-primary"
       >
