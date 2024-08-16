@@ -22,7 +22,8 @@ export default function ConfirmationActions() {
   const handleSubmit = async (formData: FormData) => {
     startTransition(async () => {
       try {
-        await createReservationWithValues(formData);
+        // await createReservationWithValues(formData);
+        console.log(formData);
         router.push("/complete");
       } catch (error) {
         console.error(error);
