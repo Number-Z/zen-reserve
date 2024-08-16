@@ -3,8 +3,10 @@
 import type { RESERVATION_STATUS } from "@/consts/status";
 import ReservationCanceledForCustomer from "@/emails/customer/ReservationCanceled";
 import ReservationConfirmedForCustomer from "@/emails/customer/ReservationConfirmed";
+import InstructorAssigned from "@/emails/instructor/InstructorAssigned";
+import InstructorCanceled from "@/emails/instructor/InstructorCanceled";
 import ReservationCanceledForInstructor from "@/emails/instructor/ReservationCanceled";
-import ReservationConfirmedForInstructor from "@/emails/instructor/ReservationConfirmed";
+import ReservationUpdated from "@/emails/instructor/ReservationUpdated";
 import { render } from "@react-email/components";
 import nodemailer from "nodemailer";
 import { createElement } from "react";
@@ -34,10 +36,9 @@ export const sendMail = async (data: EmailPayload) => {
   return await transporter.sendMail(data);
 };
 
-type SendEmailParams = {
+type sendEmailToCustomerParams = {
   from: string;
   to: string;
-  name?: string;
   serviceName: string;
   status: keyof typeof RESERVATION_STATUS;
   customer: { label: string; value: string }[];
@@ -53,7 +54,7 @@ export async function sendEmailToCustomer({
   customer,
   reservationDetails,
   options,
-}: SendEmailParams) {
+}: sendEmailToCustomerParams) {
   switch (status) {
     case "CONFIRMED":
       await sendMail({
@@ -90,32 +91,87 @@ export async function sendEmailToCustomer({
   }
 }
 
+type sendEmailToInstructorParams = {
+  from: string;
+  to: string;
+  name: string;
+  serviceName: string;
+  type: "ASSIGNED" | "UPDATED" | "CANCELED";
+  status: keyof typeof RESERVATION_STATUS;
+  customer: { label: string; value: string }[];
+  reservationDetails: { label: string; value: string }[];
+  options: { label: string; value: string }[];
+  instructors: string[];
+};
+
 export async function sendEmailToInstructor({
   from,
   to,
   name,
   serviceName,
+  type,
   status,
   customer,
   reservationDetails,
   options,
-}: SendEmailParams) {
+  instructors,
+}: sendEmailToInstructorParams) {
   switch (status) {
+    case "PENDING":
     case "CONFIRMED":
-      await sendMail({
-        from,
-        to,
-        subject: `インストラクター通知 - ${serviceName}`,
-        html: render(
-          createElement(ReservationConfirmedForInstructor, {
-            serviceName,
-            name: name || "",
-            customer,
-            reservationDetails,
-            options,
-          }),
-        ),
-      });
+      switch (type) {
+        case "ASSIGNED":
+          await sendMail({
+            from,
+            to,
+            subject: `インストラクター通知 - ${serviceName}`,
+            html: render(
+              createElement(InstructorAssigned, {
+                serviceName,
+                name: name || "",
+                customer,
+                reservationDetails,
+                options,
+                instructors,
+              }),
+            ),
+          });
+          break;
+        case "UPDATED":
+          await sendMail({
+            from,
+            to,
+            subject: `予約更新 - ${serviceName}`,
+            html: render(
+              createElement(ReservationUpdated, {
+                serviceName,
+                name: name || "",
+                customer,
+                reservationDetails,
+                options,
+                instructors,
+              }),
+            ),
+          });
+          break;
+        case "CANCELED":
+          await sendMail({
+            from,
+            to,
+            subject: `インストラクターキャンセル - ${serviceName}`,
+            html: render(
+              createElement(InstructorCanceled, {
+                serviceName,
+                name: name || "",
+                customer,
+                reservationDetails,
+                options,
+                instructors,
+              }),
+            ),
+          });
+          break;
+      }
       break;
     case "CANCELED":
       await sendMail({
@@ -129,11 +185,10 @@ export async function sendEmailToInstructor({
             customer,
             reservationDetails,
             options,
+            instructors,
           }),
         ),
       });
-      break;
-    default:
       break;
   }
 }
