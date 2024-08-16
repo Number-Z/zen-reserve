@@ -63,105 +63,116 @@ export async function createReservation(values: IFormInput, _: FormData) {
     discoveryMethodName: methodName,
   }));
 
-  const reservation = await prisma.reservation.create({
-    data: {
-      serviceId: service.serviceId,
-      // biome-ignore lint/style/noNonNullAssertion: バリデーション済みのため
-      startDateTime: values.startDateTime!,
-      // biome-ignore lint/style/noNonNullAssertion: バリデーション済みのため
-      endDateTime: values.endDateTime!,
-      firstName: values.customer.firstName,
-      lastName: values.customer.lastName,
-      email: values.customer.email,
-      phoneNumber: values.customer.phoneNumber,
-      adultCount: values.customer.adultCount,
-      otherInfo: values.customer.otherInfo,
-      status: RESERVATION_STATUS.PENDING,
-      totalPrice: totalPrice,
-      discount: 0,
-      OptionReservation: {
-        create: optionReservationsData,
-      },
-      DiscoveryMethodReservation: {
-        create: discoveryMethodsData,
-      },
-    },
-  });
+  console.log("values");
+  console.dir(values, { depth: null });
+  console.log("startDateTime");
+  console.log(
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
+    format(toZonedTime(values.startDateTime!, "Asia/Tokyo"), "HH:mm"),
+  );
+  console.log("endDateTime");
+  // biome-ignore lint/style/noNonNullAssertion: <explanation>
+  console.log(format(toZonedTime(values.endDateTime!, "Asia/Tokyo"), "HH:mm"));
 
-  // 予約者情報の配列
-  const customer = [
-    { label: "姓", value: values.customer.lastName },
-    { label: "名", value: values.customer.firstName },
-    { label: "メールアドレス", value: values.customer.email },
-    { label: "電話番号", value: values.customer.phoneNumber },
-  ];
+  // const reservation = await prisma.reservation.create({
+  //   data: {
+  //     serviceId: service.serviceId,
+  //     // biome-ignore lint/style/noNonNullAssertion: バリデーション済みのため
+  //     startDateTime: values.startDateTime!,
+  //     // biome-ignore lint/style/noNonNullAssertion: バリデーション済みのため
+  //     endDateTime: values.endDateTime!,
+  //     firstName: values.customer.firstName,
+  //     lastName: values.customer.lastName,
+  //     email: values.customer.email,
+  //     phoneNumber: values.customer.phoneNumber,
+  //     adultCount: values.customer.adultCount,
+  //     otherInfo: values.customer.otherInfo,
+  //     status: RESERVATION_STATUS.PENDING,
+  //     totalPrice: totalPrice,
+  //     discount: 0,
+  //     OptionReservation: {
+  //       create: optionReservationsData,
+  //     },
+  //     DiscoveryMethodReservation: {
+  //       create: discoveryMethodsData,
+  //     },
+  //   },
+  // });
 
-  // 予約詳細の配列
-  const reservationDetails = [
-    { label: "予約ID", value: reservation.reservationId.toString() },
-    {
-      label: "予約日",
-      value: format(
-        // biome-ignore lint/style/noNonNullAssertion: バリデーション済みのため
-        toZonedTime(values.startDateTime!, "Asia/Tokyo"),
-        "yyyy年MM月dd日",
-      ),
-    },
-    {
-      label: "予約時間",
-      // biome-ignore lint/style/noNonNullAssertion: バリデーション済みのため
-      value: `${format(toZonedTime(values.startDateTime!, "Asia/Tokyo"), "HH:mm")} - ${format(toZonedTime(values.endDateTime!, "Asia/Tokyo"), "HH:mm")}`,
-    },
-    { label: "人数", value: `${values.customer.adultCount}名` },
-    { label: "料金", value: `${totalPrice.toLocaleString()}円` },
-  ];
+  // // 予約者情報の配列
+  // const customer = [
+  //   { label: "姓", value: values.customer.lastName },
+  //   { label: "名", value: values.customer.firstName },
+  //   { label: "メールアドレス", value: values.customer.email },
+  //   { label: "電話番号", value: values.customer.phoneNumber },
+  // ];
 
-  // オプションの配列
-  const options = Object.entries(values.options)
-    .map(([key, optionValue]) => {
-      const optionService = optionsServices.find(
-        (opt) => opt.Option.name === key,
-      );
-      if (!optionService) {
-        // オプションが見つからない場合はスキップ
-        return null;
-      }
+  // // 予約詳細の配列
+  // const reservationDetails = [
+  //   { label: "予約ID", value: reservation.reservationId.toString() },
+  //   {
+  //     label: "予約日",
+  //     value: format(
+  //       // biome-ignore lint/style/noNonNullAssertion: バリデーション済みのため
+  //       toZonedTime(values.startDateTime!, "Asia/Tokyo"),
+  //       "yyyy年MM月dd日",
+  //     ),
+  //   },
+  //   {
+  //     label: "予約時間",
+  //     // biome-ignore lint/style/noNonNullAssertion: バリデーション済みのため
+  //     value: `${format(toZonedTime(values.startDateTime!, "Asia/Tokyo"), "HH:mm")} - ${format(toZonedTime(values.endDateTime!, "Asia/Tokyo"), "HH:mm")}`,
+  //   },
+  //   { label: "人数", value: `${values.customer.adultCount}名` },
+  //   { label: "料金", value: `${totalPrice.toLocaleString()}円` },
+  // ];
 
-      let displayValue: string;
-      if (typeof optionValue === "boolean") {
-        displayValue = optionValue ? "あり" : "なし";
-      } else if (typeof optionValue === "number") {
-        displayValue = optionValue > 0 ? `${optionValue}個` : "なし";
-      } else {
-        displayValue = "なし";
-      }
+  // // オプションの配列
+  // const options = Object.entries(values.options)
+  //   .map(([key, optionValue]) => {
+  //     const optionService = optionsServices.find(
+  //       (opt) => opt.Option.name === key,
+  //     );
+  //     if (!optionService) {
+  //       // オプションが見つからない場合はスキップ
+  //       return null;
+  //     }
 
-      return {
-        label: optionService.Option.printName,
-        value: displayValue,
-      };
-    })
-    .filter(
-      (option): option is { label: string; value: string } => option !== null,
-    );
+  //     let displayValue: string;
+  //     if (typeof optionValue === "boolean") {
+  //       displayValue = optionValue ? "あり" : "なし";
+  //     } else if (typeof optionValue === "number") {
+  //       displayValue = optionValue > 0 ? `${optionValue}個` : "なし";
+  //     } else {
+  //       displayValue = "なし";
+  //     }
 
-  // その他ご要望を追加
-  options.push({
-    label: "その他ご要望",
-    value: values.customer.otherInfo ?? "なし",
-  });
+  //     return {
+  //       label: optionService.Option.printName,
+  //       value: displayValue,
+  //     };
+  //   })
+  //   .filter(
+  //     (option): option is { label: string; value: string } => option !== null,
+  //   );
 
-  await sendEmail({
-    to: values.customer.email,
-    customer,
-    reservationDetails,
-    options,
-  });
+  // // その他ご要望を追加
+  // options.push({
+  //   label: "その他ご要望",
+  //   value: values.customer.otherInfo ?? "なし",
+  // });
 
-  await sendEmailForAdmin({
-    to: ADMIN_EMAIL,
-    customer,
-    reservationDetails,
-    options,
-  });
+  // await sendEmail({
+  //   to: values.customer.email,
+  //   customer,
+  //   reservationDetails,
+  //   options,
+  // });
+
+  // await sendEmailForAdmin({
+  //   to: ADMIN_EMAIL,
+  //   customer,
+  //   reservationDetails,
+  //   options,
+  // });
 }
