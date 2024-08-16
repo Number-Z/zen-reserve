@@ -9,6 +9,7 @@ import {
 import getOptionsService from "@/services/reservations/getOptionsService";
 import prisma from "@zen-reserve/database";
 import { format } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 import { redirect } from "next/navigation";
 
 function shouldSendEmail(currentStatus: string, updatedStatus: string) {
@@ -118,11 +119,14 @@ export async function updateReservation(reservation: ReservationSchemaType) {
     { label: "予約ID", value: updatedReservation.reservationId.toString() },
     {
       label: "予約日",
-      value: format(updatedReservation.startDateTime, "yyyy年MM月dd日"),
+      value: format(
+        toZonedTime(updatedReservation.startDateTime, "Asia/Tokyo"),
+        "yyyy年MM月dd日",
+      ),
     },
     {
       label: "予約時間",
-      value: `${format(updatedReservation.startDateTime, "HH:mm")} - ${format(updatedReservation.endDateTime, "HH:mm")}`,
+      value: `${format(toZonedTime(updatedReservation.startDateTime, "Asia/Tokyo"), "HH:mm")} - ${format(toZonedTime(updatedReservation.endDateTime, "Asia/Tokyo"), "HH:mm")}`,
     },
     { label: "人数", value: `${updatedReservation.adultCount}名` },
     {
