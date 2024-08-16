@@ -16,6 +16,7 @@ type CompleteProps = {
   customer: { label: string; value: string }[];
   reservationDetails: { label: string; value: string }[];
   options: { label: string; value: string }[];
+  instructors: string[];
 };
 
 const renderTableRow = (label: string, value: string) => (
@@ -31,12 +32,13 @@ const renderTableRow = (label: string, value: string) => (
   </tr>
 );
 
-export default function ReservationConfirmed({
+export default function ReservationUpdated({
   serviceName,
   name,
   customer,
   reservationDetails,
   options,
+  instructors,
 }: CompleteProps) {
   switch (serviceName) {
     case "SAUNPING":
@@ -45,7 +47,7 @@ export default function ReservationConfirmed({
       return (
         <Html lang="ja">
           <Head>
-            <title>インストラクター通知 - {serviceName}</title>
+            <title>予約更新 - {serviceName}</title>
           </Head>
           <Tailwind>
             <Body className="bg-white font-sans">
@@ -58,20 +60,12 @@ export default function ReservationConfirmed({
                   className="h-[42px] w-[42px]"
                 />
                 <Heading className="pt-4 font-bold text-2xl text-gray-700">
-                  予約確定 - {serviceName}
+                  予約更新 - {serviceName}
                 </Heading>
                 <Text className="mb-4 text-base text-gray-600 leading-relaxed">
                   {name}様
                   <br />
-                  {serviceName}のインストラクターになりました。
-                  <br />
-                  インストラクターは、予約開始30分前には現地で準備をお願いいたします。
-                  <br />
-                  下記当日の予約内容になります。
-                  <br />
-                  オプション等の確認、忘れ物がないようにご準備よろしくお願いします。
-                  <br />
-                  また、着替え用のテントも必ずお持ちください。
+                  インストラクターとしてアサインされている下記ご予約に、更新がありました。
                 </Text>
                 <h2 className="font-bold text-gray-700 text-lg">予約者情報</h2>
                 <table className="mb-5 w-full border-collapse">
@@ -84,6 +78,7 @@ export default function ReservationConfirmed({
                   {reservationDetails.map(({ label, value }) =>
                     renderTableRow(label, value),
                   )}
+                  {renderTableRow("インストラクター", instructors.join(", "))}
                 </table>
                 <h2 className="font-bold text-gray-700 text-lg">
                   オプション内容

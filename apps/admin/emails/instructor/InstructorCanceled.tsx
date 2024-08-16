@@ -32,7 +32,7 @@ const renderTableRow = (label: string, value: string) => (
   </tr>
 );
 
-export default function ReservationCanceled({
+export default function InstructorCanceled({
   serviceName,
   name,
   customer,
@@ -47,7 +47,7 @@ export default function ReservationCanceled({
       return (
         <Html lang="ja">
           <Head>
-            <title>予約キャンセル - {serviceName}</title>
+            <title>インストラクターキャンセル - {serviceName}</title>
           </Head>
           <Tailwind>
             <Body className="bg-white font-sans">
@@ -60,12 +60,12 @@ export default function ReservationCanceled({
                   className="h-[42px] w-[42px]"
                 />
                 <Heading className="pt-4 font-bold text-2xl text-gray-700">
-                  予約キャンセル - {serviceName}
+                  インストラクターキャンセル - {serviceName}
                 </Heading>
                 <Text className="mb-4 text-base text-gray-600 leading-relaxed">
                   {name}様
                   <br />
-                  下記ご予約のインストラクターとしてアサインされていましたが、ご予約がキャンセルになりました。
+                  下記ご予約のインストラクターとしてアサインされていましたが、アサインがキャンセルになりました。
                 </Text>
                 <h2 className="font-bold text-gray-700 text-lg">予約者情報</h2>
                 <table className="mb-5 w-full border-collapse">

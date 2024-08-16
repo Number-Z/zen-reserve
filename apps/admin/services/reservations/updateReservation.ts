@@ -1,11 +1,13 @@
 "use server";
 
 import { RESERVATION_STATUS } from "@/consts/status";
+import { getStatusString } from "@/lib/utils";
 import type { ReservationSchemaType } from "@/schemas/reservation";
 import {
   sendEmailToCustomer,
   sendEmailToInstructor,
 } from "@/services/common/sendEmail";
+import getInstructorById from "@/services/instructors/getInstructorById";
 import getOptionsService from "@/services/reservations/getOptionsService";
 import prisma from "@zen-reserve/database";
 import { format } from "date-fns";
@@ -133,6 +135,10 @@ export async function updateReservation(reservation: ReservationSchemaType) {
       label: "料金",
       value: `${(updatedReservation.totalPrice - updatedReservation.discount).toLocaleString()}円`,
     },
+    {
+      label: "予約ステータス",
+      value: getStatusString(updatedReservation.status),
+    },
   ];
 
   // オプションの配列
@@ -164,6 +170,12 @@ export async function updateReservation(reservation: ReservationSchemaType) {
     value: updatedReservation.otherInfo ?? "なし",
   });
 
+  // インストラクターの配列
+  const instructors = updatedReservation.InstructorReservation.map((ir) => {
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
+    return ir.Instructor!.name;
+  });
+
   // from の決定
   let from = "noreply@reserve.z-en.jp";
   switch (updatedReservation.Service.name) {
@@ -175,7 +187,7 @@ export async function updateReservation(reservation: ReservationSchemaType) {
       break;
   }
 
-  // 予約リクエスト->確定時、キャンセル時メール送信
+  // 予約リクエスト->確定時とキャンセル時にメール送信
   if (shouldSendEmail(currentReservation.status, updatedReservation.status)) {
     await sendEmailToCustomer({
       from,
@@ -195,31 +207,51 @@ export async function updateReservation(reservation: ReservationSchemaType) {
   const updatedInstructorIds =
     updatedReservation.InstructorReservation?.map((ir) => ir.instructorId) ??
     [];
+
   const newInstructorIds = updatedInstructorIds.filter(
     (id) => !currentInstructorIds.includes(id),
   );
   const deletedInstructorIds = currentInstructorIds.filter(
     (id) => !updatedInstructorIds.includes(id),
   );
-  const changedInstructorIds = newInstructorIds.concat(
-    deletedInstructorIds.filter((id) => updatedInstructorIds.includes(id)),
+  const unchangedInstructorIds = currentInstructorIds.filter((id) =>
+    updatedInstructorIds.includes(id),
   );
-  for (const instructorId of changedInstructorIds) {
-    const instructor = updatedReservation.InstructorReservation.find(
-      (ir) => ir.instructorId === instructorId,
-    )?.Instructor;
+
+  // メール送信の共通関数
+  const sendEmailToInstructorWithType = async (
+    instructorId: number,
+    type: "ASSIGNED" | "UPDATED" | "CANCELED",
+  ) => {
+    const instructor = await getInstructorById(instructorId);
     if (instructor?.email) {
       await sendEmailToInstructor({
         from,
         to: instructor.email,
         name: instructor.name,
+        type,
         status: updatedReservation.status,
-        serviceName: updatedReservation.Service?.name,
+        // biome-ignore lint/style/noNonNullAssertion: <explanation>
+        serviceName: updatedReservation.Service?.name!,
         customer: customer,
         reservationDetails: reservationDetails,
         options: options,
+        instructors: instructors,
       });
     }
+  };
+
+  // 新しく追加されたインストラクターにメール送信
+  for (const instructorId of newInstructorIds) {
+    await sendEmailToInstructorWithType(instructorId, "ASSIGNED");
+  }
+  // 継続のインストラクターにメール送信
+  for (const instructorId of unchangedInstructorIds) {
+    await sendEmailToInstructorWithType(instructorId, "UPDATED");
+  }
+  // 削除されたインストラクターにメール送信
+  for (const instructorId of deletedInstructorIds) {
+    await sendEmailToInstructorWithType(instructorId, "CANCELED");
   }
 
   redirect("/dashboard/reservations");
