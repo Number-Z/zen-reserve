@@ -20,11 +20,12 @@ export default function ConfirmationActions() {
   const createReservationWithValues = createReservation.bind(null, values);
 
   const handleSubmit = async (formData: FormData) => {
+    console.log(formData);
     startTransition(async () => {
       try {
         // await createReservationWithValues(formData);
-        console.log(formData);
-        router.push("/complete");
+        // router.push("/complete");
+        console.log("予約完了");
       } catch (error) {
         console.error(error);
       }
