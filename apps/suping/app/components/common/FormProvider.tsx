@@ -26,7 +26,7 @@ export default function FormProvider({
         firstName: "",
         email: "",
         phoneNumber: "",
-        adultCount: 1,
+        adultCount: 2,
         childCount: 0,
       },
       discoveryMethods: [],

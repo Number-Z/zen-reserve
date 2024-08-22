@@ -14,7 +14,7 @@ export default function MemoizedParticipants() {
       <h2 className="font-bold text-gray-900 text-xl">人数入力</h2>
       <div>
         <label htmlFor="adultCount" className="text-sm">
-          大人（中学生以上）
+          大人（中学生以上）※2名様よりご予約いただけます
         </label>
         <select
           {...register("customer.adultCount", {
@@ -23,7 +23,6 @@ export default function MemoizedParticipants() {
           id="adultCount"
           className="block w-full rounded-lg border border-gray-200 p-4 text-sm focus:border-blue-500 focus:ring-blue-500 disabled:pointer-events-none disabled:opacity-50"
         >
-          <option value="1">1</option>
           {Array.from({ length: 4 }, (_, i) => (
             <option key={`adultCount-${i + 2}`} value={i + 2}>
               {i + 2}

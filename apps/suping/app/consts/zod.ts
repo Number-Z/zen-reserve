@@ -47,7 +47,8 @@ export const schema = z.object({
         required_error: "数値を入力してください",
       })
       .int("整数を入力してください")
-      .positive("1人以上で予約してください"),
+      .positive("2人以上で予約してください")
+      .min(2, "2人以上で予約してください"),
     childCount: z
       .number({
         required_error: "数値を入力してください",
