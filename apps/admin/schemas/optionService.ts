@@ -11,7 +11,7 @@ export const optionServiceSchema = z.object({
     })
     .min(1, { message: "オプション名を入力してください" }),
   printName: z.string({ message: "表示名を入力してください" }),
-  description: z.string({ message: "説明を入力してください" }),
+  description: z.string({ message: "説明を入力してください" }).optional(),
   price: z.coerce.number({ message: "金額を入力してください" }),
   stock: z
     .preprocess(

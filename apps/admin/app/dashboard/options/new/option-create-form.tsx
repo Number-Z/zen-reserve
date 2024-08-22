@@ -17,6 +17,7 @@ import { useForm } from "react-hook-form";
 type OptionCreateFormProps = {
   services: ServicesType;
 };
+
 export default function OptionCreateForm({ services }: OptionCreateFormProps) {
   const router = useRouter();
 
@@ -27,7 +28,7 @@ export default function OptionCreateForm({ services }: OptionCreateFormProps) {
       serviceId: undefined,
       name: undefined,
       printName: undefined,
-      description: undefined,
+      description: "",
       price: undefined,
       stock: "",
       limit: "",

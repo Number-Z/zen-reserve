@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -9,17 +11,20 @@ import {
 import { logOut } from "@/lib/actions";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+const navItems = [
+  { href: "/dashboard/reservations", label: "予約一覧" },
+  { href: "/dashboard/options", label: "オプション一覧" },
+  { href: "/dashboard/unavailable-date-times", label: "予約停止日時一覧" },
+  { href: "/dashboard/instructors", label: "インストラクター一覧" },
+];
 
 export function Nav({
   className,
   ...props
 }: React.HTMLAttributes<HTMLElement>) {
-  const navItems = [
-    { href: "/dashboard/reservations", label: "予約一覧" },
-    { href: "/dashboard/options", label: "オプション一覧" },
-    { href: "/dashboard/unavailable-date-times", label: "予約停止日時一覧" },
-    { href: "/dashboard/instructors", label: "インストラクター一覧" },
-  ];
+  const router = useRouter();
 
   return (
     <nav
@@ -38,16 +43,14 @@ export function Nav({
         </Link>
 
         <div className="max-w-[200px] flex-grow md:hidden">
-          <Select>
+          <Select onValueChange={(value) => router.push(value)}>
             <SelectTrigger>
               <SelectValue placeholder="メニュー" />
             </SelectTrigger>
             <SelectContent>
               {navItems.map((item) => (
                 <SelectItem key={item.href} value={item.href}>
-                  <Link href={item.href} className="block w-full">
-                    {item.label}
-                  </Link>
+                  {item.label}
                 </SelectItem>
               ))}
             </SelectContent>
