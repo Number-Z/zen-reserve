@@ -68,5 +68,5 @@ export const schema = z.object({
     otherInfo: z.string().optional(),
   }),
   discoveryMethods: z.array(z.string()),
-  totalPrice: z.number().int().nonnegative().min(5000),
+  totalPrice: z.number().int().nonnegative().min(5500),
 });

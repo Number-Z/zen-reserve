@@ -23,7 +23,7 @@ export async function createReservation(values: IFormInput, _: FormData) {
   const optionsServices = await getOptionsServices();
 
   // totalPriceの計算
-  let totalPrice = 5000; // 基本料金
+  let totalPrice = 5500; // 基本料金
   for (const [optionName, optionValue] of Object.entries(values.options)) {
     const option = optionsServices.find(
       (opt) => opt.Option.name === optionName,

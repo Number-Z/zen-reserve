@@ -45,7 +45,7 @@ export default function ReservationForm({
       selectedOptions: IFormInput["options"],
       availableOptions: OptionsServicesType,
     ): number => {
-      let totalPrice = 5000;
+      let totalPrice = 5500;
 
       for (const [optionName, optionValue] of Object.entries(selectedOptions)) {
         const option = availableOptions.find(
