@@ -75,14 +75,14 @@ export async function updateReservation(reservation: ReservationSchemaType) {
       otherInfo: reservation.customer.otherInfo,
       status:
         reservation.status as (typeof RESERVATION_STATUS)[keyof typeof RESERVATION_STATUS],
-      // totalPrice: reservation.totalPrice,  // 画面上でdiscountを差し引いて表示するのでtotalPrice自体は更新しない
+      totalPrice: reservation.totalPrice,
+      discount: reservation.discount,
       InstructorReservation: {
         deleteMany: {}, // 既存のインストラクターをすべて削除
         create: reservation.instructorId?.map((instructorId) => ({
           instructorId,
         })),
       },
-      discount: reservation.discount,
       OptionReservation: {
         deleteMany: {}, // 既存のオプションをすべて削除
         create: optionReservationsData, // オプションを新規作成

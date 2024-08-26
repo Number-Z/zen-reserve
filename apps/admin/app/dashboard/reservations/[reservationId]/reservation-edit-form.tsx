@@ -46,6 +46,17 @@ export default function ReservationEditForm({
     {} as Record<string, number | boolean>,
   );
 
+  const basePrice =
+    reservation.totalPrice -
+    reservation.OptionReservation.reduce((total, option) => {
+      const optionService = optionsService.find(
+        (os) => os.optionId === option.optionId,
+      );
+      return (
+        total + (optionService ? optionService.price * option.quantity : 0)
+      );
+    }, 0);
+
   const form = useForm<ReservationSchemaType>({
     mode: "onChange",
     resolver: zodResolver(reservationSchema),
@@ -69,7 +80,7 @@ export default function ReservationEditForm({
         (instructor) => instructor.instructorId,
       ),
       discount: reservation.discount,
-      totalPrice: reservation.totalPrice,
+      totalPrice: basePrice,
       discoveryMethods: reservation.DiscoveryMethodReservation.map(
         (discoveryMethod) => discoveryMethod.discoveryMethodName,
       ),
@@ -87,9 +98,10 @@ export default function ReservationEditForm({
       <form onSubmit={handleSubmit} className="space-y-8">
         <Customer />
         <Details
-          defaultTotalPrice={reservation.totalPrice}
+          basePrice={basePrice}
           instructors={instructors}
           discoveryMethods={discoveryMethods}
+          optionsService={optionsService}
         />
         <Options optionsService={optionsService} />
         <div className="flex justify-end">

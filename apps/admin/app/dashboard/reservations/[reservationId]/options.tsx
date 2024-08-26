@@ -44,7 +44,12 @@ export default function Options({ optionsService }: DetailsProps) {
                         />
                       </FormControl>
                       <div className="!mt-0">
-                        <FormLabel>{optionService.printName}</FormLabel>
+                        <FormLabel>
+                          {optionService.printName}{" "}
+                          <span className="text-gray-500 text-xs">
+                            ({optionService.price.toLocaleString()}円)
+                          </span>
+                        </FormLabel>
                         <FormDescription />
                       </div>
                     </FormItem>
@@ -52,7 +57,12 @@ export default function Options({ optionsService }: DetailsProps) {
                 case "select":
                   return (
                     <FormItem>
-                      <FormLabel>{optionService.printName}</FormLabel>
+                      <FormLabel>
+                        {optionService.printName}{" "}
+                        <span className="text-gray-500 text-xs">
+                          ({optionService.price.toLocaleString()}円)
+                        </span>
+                      </FormLabel>
                       <FormControl>
                         <Input
                           type="number"

@@ -22,29 +22,72 @@ import { getStatusString } from "@/lib/utils";
 import type { ReservationSchemaType } from "@/schemas/reservation";
 import type { InstructorsType } from "@/services/instructors/getInstructors";
 import type { DiscoveryMethodsType } from "@/services/reservations/getDiscoveryMethods";
-import { useEffect } from "react";
+import type { OptionsServiceType } from "@/services/reservations/getOptionsService";
+import { useCallback, useEffect, useMemo } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 
 type DetailsProps = {
-  defaultTotalPrice: number;
+  basePrice: number;
   instructors: InstructorsType;
   discoveryMethods: DiscoveryMethodsType;
+  optionsService: OptionsServiceType;
 };
 
 export default function Details({
-  defaultTotalPrice,
+  basePrice,
   instructors,
   discoveryMethods,
+  optionsService,
 }: DetailsProps) {
   const form = useFormContext<ReservationSchemaType>();
+
+  const memoizedCalculateTotalPrice = useMemo(() => {
+    return (
+      selectedOptions: Record<string, string | number | boolean>,
+      availableOptions: OptionsServiceType,
+    ): number => {
+      let totalPrice = basePrice;
+
+      for (const [optionName, optionValue] of Object.entries(selectedOptions)) {
+        const option = availableOptions.find((o) => o.name === optionName);
+        if (option) {
+          if (typeof optionValue === "boolean") {
+            if (optionValue) {
+              totalPrice += option.price;
+            }
+          } else if (typeof optionValue === "number") {
+            if (optionValue > 0) {
+              totalPrice += option.price * optionValue;
+            }
+          }
+        }
+      }
+
+      return totalPrice;
+    };
+  }, [basePrice]);
+
+  const watchedOptions = useWatch({
+    control: form.control,
+    name: "options",
+  });
 
   const discount = useWatch({
     control: form.control,
     name: "discount",
   });
+
+  const updateTotalPrice = useCallback(() => {
+    const calculatedPrice = memoizedCalculateTotalPrice(
+      watchedOptions,
+      optionsService,
+    );
+    form.setValue("totalPrice", calculatedPrice);
+  }, [memoizedCalculateTotalPrice, watchedOptions, optionsService, form]);
+
   useEffect(() => {
-    form.setValue("totalPrice", defaultTotalPrice - discount);
-  }, [defaultTotalPrice, discount, form.setValue]);
+    updateTotalPrice();
+  }, [updateTotalPrice]);
 
   return (
     <Card>
@@ -171,7 +214,13 @@ export default function Details({
             <FormItem>
               <FormLabel>割引額</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input
+                  {...field}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    updateTotalPrice();
+                  }}
+                />
               </FormControl>
               <FormDescription />
               <FormMessage />
@@ -185,7 +234,7 @@ export default function Details({
             <FormItem>
               <FormLabel>金額</FormLabel>
               <FormControl>
-                <Input disabled {...field} />
+                <Input disabled value={`${field.value - (discount || 0)}`} />
               </FormControl>
               <FormDescription />
               <FormMessage />
