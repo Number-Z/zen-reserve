@@ -10,8 +10,7 @@ import {
 import getInstructorById from "@/services/instructors/getInstructorById";
 import getOptionsService from "@/services/reservations/getOptionsService";
 import prisma from "@zen-reserve/database";
-import { format } from "date-fns";
-import { toZonedTime } from "date-fns-tz";
+import { format, toZonedTime } from "date-fns-tz";
 import { redirect } from "next/navigation";
 
 function shouldSendEmail(currentStatus: string, updatedStatus: string) {
@@ -124,11 +123,12 @@ export async function updateReservation(reservation: ReservationSchemaType) {
       value: format(
         toZonedTime(updatedReservation.startDateTime, "Asia/Tokyo"),
         "yyyy年MM月dd日",
+        { timeZone: "Asia/Tokyo" },
       ),
     },
     {
       label: "予約時間",
-      value: `${format(toZonedTime(updatedReservation.startDateTime, "Asia/Tokyo"), "HH:mm")} - ${format(toZonedTime(updatedReservation.endDateTime, "Asia/Tokyo"), "HH:mm")}`,
+      value: `${format(toZonedTime(updatedReservation.startDateTime, "Asia/Tokyo"), "HH:mm", { timeZone: "Asia/Tokyo" })} - ${format(toZonedTime(updatedReservation.endDateTime, "Asia/Tokyo"), "HH:mm", { timeZone: "Asia/Tokyo" })}`,
     },
     { label: "人数", value: `${updatedReservation.adultCount}名` },
     {
