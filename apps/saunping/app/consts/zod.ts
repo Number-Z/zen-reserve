@@ -1,4 +1,4 @@
-import { addHours } from "date-fns";
+import { addHours, getHours } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
 import { isMobilePhone } from "validator";
 import * as z from "zod";
@@ -8,7 +8,14 @@ const minDate = addHours(toZonedTime(new Date(), "Asia/Tokyo"), 48);
 export const schema = z.object({
   startDateTime: z
     .date({ message: "日時を選択してください" })
-    .min(minDate, "その日時はもう予約できません"),
+    .min(minDate, "その日時はもう予約できません")
+    .refine(
+      (date) => {
+        const hours = getHours(toZonedTime(date, "Asia/Tokyo"));
+        return hours >= 11 && hours <= 13;
+      },
+      { message: "予約開始時刻は11時から13時の間である必要があります" },
+    ),
   endDateTime: z.date(),
   options: z.object({
     tentSetup: z.boolean(),
