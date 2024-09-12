@@ -1,11 +1,11 @@
 "use server";
 
 import { SERVICE_NAME } from "@/app/consts/consts";
+import ReservationRequestNotification from "@/emails/ReservationRequestNotification";
 import ReservationRequested from "@/emails/ReservationRequested";
 import { render } from "@react-email/components";
 import nodemailer from "nodemailer";
 import { createElement } from "react";
-import ReservationRequestNotification from "../../../saunping/emails/ReservationRequestNotification";
 
 type EmailPayload = {
   to: string;

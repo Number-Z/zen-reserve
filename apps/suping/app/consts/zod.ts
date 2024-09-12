@@ -12,9 +12,9 @@ export const schema = z.object({
     .refine(
       (date) => {
         const hours = getHours(toZonedTime(date, "Asia/Tokyo"));
-        return hours >= 11 && hours <= 13;
+        return hours >= 9 && hours <= 14;
       },
-      { message: "予約開始時刻は11時から13時の間である必要があります" },
+      { message: "予約開始時刻は9時から14時の間である必要があります" },
     ),
   endDateTime: z.date(),
   options: z.object({

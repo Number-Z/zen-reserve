@@ -23,8 +23,8 @@ export default function OptionsTable({ optionsServices }: OptionsTableProps) {
   const { getValues } = useFormContext<IFormInput>();
   const values = getValues();
 
-  const rows = optionsServices.map((optionService) => {
-    const option = optionService.Option;
+  const rows = optionsServices.map((optionsService) => {
+    const option = optionsService.Option;
     const optionValue =
       values.options[option.name as keyof typeof values.options];
 
