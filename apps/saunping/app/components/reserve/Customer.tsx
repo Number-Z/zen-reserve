@@ -73,30 +73,6 @@ export default function Customer() {
         )}
       </div>
       <div>
-        <label htmlFor="adultCount" className="text-sm">
-          参加人数
-        </label>
-        <select
-          {...register("customer.adultCount", {
-            valueAsNumber: true,
-          })}
-          id="adultCount"
-          className="block w-full rounded-lg border border-gray-200 p-4 text-sm focus:border-blue-500 focus:ring-blue-500 disabled:pointer-events-none disabled:opacity-50"
-        >
-          <option value="1">1</option>
-          {Array.from({ length: 9 }, (_, i) => (
-            <option key={`adultCount-${i + 2}`} value={i + 2}>
-              {i + 2}
-            </option>
-          ))}
-        </select>
-        {errors.customer?.adultCount && (
-          <p className="text-red-500 text-sm">
-            {errors.customer.adultCount?.message}
-          </p>
-        )}
-      </div>
-      <div>
         <label htmlFor="otherInfo" className="text-sm">
           その他ご要望
         </label>

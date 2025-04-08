@@ -22,8 +22,20 @@ export async function createReservation(values: IFormInput, _: FormData) {
   // オプションを取得
   const optionsServices = await getOptionsServices();
 
-  // totalPriceの計算
-  let totalPrice = 5500; // 基本料金
+  // === totalPriceの計算
+  let subtotalPrice = 5000;
+
+  // 大人の人数料金の加算
+  if (values.customer.adultCount > 1) {
+    subtotalPrice += (values.customer.adultCount - 1) * 1500;
+  }
+
+  // 子供料金の加算
+  if (values.customer.childCount && values.customer.childCount > 0) {
+    subtotalPrice += values.customer.childCount * 500;
+  }
+
+  // オプション料金の加算
   for (const [optionName, optionValue] of Object.entries(values.options)) {
     const option = optionsServices.find(
       (opt) => opt.Option.name === optionName,
@@ -31,13 +43,17 @@ export async function createReservation(values: IFormInput, _: FormData) {
     if (option) {
       if (typeof optionValue === "boolean") {
         if (optionValue) {
-          totalPrice += option.Option.price;
+          subtotalPrice += option.Option.price;
         }
       } else if (typeof optionValue === "number" && optionValue > 0) {
-        totalPrice += option.Option.price * optionValue;
+        subtotalPrice += option.Option.price * optionValue;
       }
     }
   }
+
+  // 消費税10%を加算し、小数点以下を切り捨てた最終価格
+  const finalTotalPrice = Math.floor(subtotalPrice * 1.1);
+  // === totalPriceの計算ここまで ===
 
   // オプションの作成データを準備
   const optionReservationsData = Object.entries(values.options)
@@ -77,7 +93,7 @@ export async function createReservation(values: IFormInput, _: FormData) {
       adultCount: values.customer.adultCount,
       otherInfo: values.customer.otherInfo,
       status: RESERVATION_STATUS.PENDING,
-      totalPrice: totalPrice,
+      totalPrice: finalTotalPrice,
       discount: 0,
       OptionReservation: {
         create: optionReservationsData,
@@ -113,7 +129,7 @@ export async function createReservation(values: IFormInput, _: FormData) {
       value: `${format(toZonedTime(values.startDateTime!, "Asia/Tokyo"), "HH:mm")} - ${format(toZonedTime(values.endDateTime!, "Asia/Tokyo"), "HH:mm")}`,
     },
     { label: "人数", value: `${values.customer.adultCount}名` },
-    { label: "料金", value: `${totalPrice.toLocaleString()}円` },
+    { label: "料金", value: `${finalTotalPrice.toLocaleString()}円` },
   ];
 
   // オプションの配列

@@ -22,10 +22,30 @@ export async function createReservation(values: IFormInput, _: FormData) {
   // オプションを取得
   const optionsServices = await getOptionsServices();
 
-  // totalPriceの計算
-  let totalPrice =
-    5500 * values.customer.adultCount + 3000 * values.customer.childCount;
+  // === totalPriceの計算
+  let adultPrice = 0;
+  // 大人の人数に応じた料金計算
+  if (values.customer.adultCount === 1) {
+    adultPrice = 10000;
+  } else if (
+    values.customer.adultCount >= 2 &&
+    values.customer.adultCount <= 6
+  ) {
+    adultPrice = 6000 * values.customer.adultCount;
+  } else if (
+    values.customer.adultCount >= 7 &&
+    values.customer.adultCount <= 10
+  ) {
+    adultPrice = 5500 * values.customer.adultCount;
+  }
 
+  // 子供料金の計算
+  const childPrice =
+    values.customer.childCount > 0 ? 3000 * values.customer.childCount : 0;
+
+  let subtotalPrice = adultPrice + childPrice;
+
+  // オプション料金の加算
   for (const [optionName, optionValue] of Object.entries(values.options)) {
     const option = optionsServices.find(
       (opt) => opt.Option.name === optionName,
@@ -33,13 +53,17 @@ export async function createReservation(values: IFormInput, _: FormData) {
     if (option) {
       if (typeof optionValue === "boolean") {
         if (optionValue) {
-          totalPrice += option.Option.price;
+          subtotalPrice += option.Option.price;
         }
       } else if (typeof optionValue === "number" && optionValue > 0) {
-        totalPrice += option.Option.price * optionValue;
+        subtotalPrice += option.Option.price * optionValue;
       }
     }
   }
+
+  // 消費税10%を加算し、小数点以下を切り捨てた最終価格
+  const finalTotalPrice = Math.floor(subtotalPrice * 1.1);
+  // === totalPriceの計算ここまで ===
 
   // オプションの作成データを準備
   const optionReservationsData = Object.entries(values.options)
@@ -80,7 +104,7 @@ export async function createReservation(values: IFormInput, _: FormData) {
       childCount: values.customer.childCount,
       otherInfo: values.customer.otherInfo,
       status: RESERVATION_STATUS.PENDING,
-      totalPrice: totalPrice,
+      totalPrice: finalTotalPrice,
       discount: 0,
       OptionReservation: {
         create: optionReservationsData,
@@ -119,7 +143,7 @@ export async function createReservation(values: IFormInput, _: FormData) {
       label: "人数",
       value: `大人 ${values.customer.adultCount}名 子供 ${values.customer.childCount}名`,
     },
-    { label: "料金", value: `${totalPrice.toLocaleString()}円` },
+    { label: "料金", value: `${finalTotalPrice.toLocaleString()}円` },
   ];
 
   // オプションの配列

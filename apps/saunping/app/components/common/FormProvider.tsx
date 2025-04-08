@@ -34,6 +34,7 @@ export default function FormProvider({
         childCount: 0,
       },
       discoveryMethods: [],
+      subTotalPrice: 5000,
       totalPrice: 5500,
     },
     resolver: zodResolver(schema),

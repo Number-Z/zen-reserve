@@ -37,7 +37,7 @@ export default function ReservationForm({
   discoveryMethods,
   unavailableDateTimes,
 }: ReservationFormProps) {
-  const methods = useFormContext<IFormInput>();
+  const { control, handleSubmit, setValue } = useFormContext<IFormInput>();
   const router = useRouter();
 
   // 価格計算
@@ -45,10 +45,23 @@ export default function ReservationForm({
     return (
       selectedOptions: IFormInput["options"],
       availableOptions: OptionsServicesType,
-      adultCount: number,
-      childCount: number,
-    ): number => {
-      let totalPrice = 5500 * adultCount + 3000 * childCount;
+      adultCount: number | undefined,
+      childCount: number | undefined,
+    ): { subtotal: number; total: number } => {
+      let adultPrice = 0;
+      // 大人の人数に応じた料金計算
+      if (adultCount === 1) {
+        adultPrice = 10000;
+      } else if (adultCount && adultCount >= 2 && adultCount <= 6) {
+        adultPrice = 6000 * adultCount;
+      } else if (adultCount && adultCount >= 7 && adultCount <= 10) {
+        adultPrice = 5500 * adultCount;
+      }
+
+      // 子供料金の計算 (childCountが数値の場合のみ)
+      const childPrice = typeof childCount === "number" ? 3000 * childCount : 0;
+
+      let subtotalPrice = adultPrice + childPrice;
 
       for (const [optionName, optionValue] of Object.entries(selectedOptions)) {
         const option = availableOptions.find(
@@ -57,47 +70,50 @@ export default function ReservationForm({
         if (option) {
           if (typeof optionValue === "boolean") {
             if (optionValue) {
-              totalPrice += option.Option.price;
+              subtotalPrice += option.Option.price;
             }
           } else if (typeof optionValue === "number") {
             if (optionValue > 0) {
-              totalPrice += option.Option.price * optionValue;
+              subtotalPrice += option.Option.price * optionValue;
             }
           }
         }
       }
 
-      return totalPrice;
+      // 消費税10%を加算し、小数点以下を切り捨て
+      const total = Math.floor(subtotalPrice * 1.1);
+      return { subtotal: subtotalPrice, total };
     };
   }, []);
 
   const watchedOptions = useWatch({
-    control: methods.control,
+    control,
     name: "options",
   });
   const adultCount = useWatch({
-    control: methods.control,
+    control,
     name: "customer.adultCount",
   });
   const childCount = useWatch({
-    control: methods.control,
+    control,
     name: "customer.childCount",
   });
   useEffect(() => {
-    const totalPrice = memoizedCalculateTotalPrice(
+    const prices = memoizedCalculateTotalPrice(
       watchedOptions,
       optionsServices,
       adultCount,
       childCount,
     );
-    methods.setValue("totalPrice", totalPrice, { shouldValidate: true });
+    setValue("subTotalPrice", prices.subtotal, { shouldValidate: false });
+    setValue("totalPrice", prices.total, { shouldValidate: true });
   }, [
     memoizedCalculateTotalPrice,
     watchedOptions,
     optionsServices,
     adultCount,
     childCount,
-    methods.setValue,
+    setValue,
   ]);
 
   const onSubmit = useCallback<SubmitHandler<IFormInput>>(() => {
@@ -107,7 +123,7 @@ export default function ReservationForm({
   return (
     <form
       className="grid grid-cols-1 lg:grid-cols-3"
-      onSubmit={methods.handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(onSubmit)}
     >
       <div className="col-span-1 flex justify-center">
         <MemoizedCalendar minDate={minDate} />

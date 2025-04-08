@@ -3,7 +3,8 @@
 import type { IFormInput } from "@/app/types/IFormInput";
 import { useFormContext } from "react-hook-form";
 
-export default function MemoizedParticipants() {
+export default function Participants() {
+  // Memoizedを除去
   const {
     register,
     formState: { errors },
@@ -37,7 +38,7 @@ export default function MemoizedParticipants() {
       </div>
       <div>
         <label htmlFor="childCount" className="text-sm">
-          子供（中学生未満）※子供は大人と相乗りになります
+          子供（中学生未満）
         </label>
         <select
           {...register("customer.childCount", {
@@ -47,6 +48,7 @@ export default function MemoizedParticipants() {
           className="block w-full rounded-lg border border-gray-200 p-4 text-sm focus:border-blue-500 focus:ring-blue-500 disabled:pointer-events-none disabled:opacity-50"
         >
           <option value="0">0</option>
+          {/* saunpingは子供の人数制限は設けないが、一旦supingに合わせる */}
           {Array.from({ length: 5 }, (_, i) => (
             <option key={`childCount-${i + 1}`} value={i + 1}>
               {i + 1}

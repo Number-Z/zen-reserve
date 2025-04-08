@@ -18,5 +18,6 @@ export type IFormInput = {
     otherInfo?: string;
   };
   discoveryMethods: string[];
+  subTotalPrice?: number;
   totalPrice: number;
 };

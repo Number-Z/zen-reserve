@@ -6,6 +6,7 @@ import Customer from "@/app/components/reserve/Customer";
 import Details from "@/app/components/reserve/Details";
 import DiscoveryMethod from "@/app/components/reserve/DiscoveryMethod";
 import Options from "@/app/components/reserve/Options";
+import Participants from "@/app/components/reserve/Participants";
 import Time from "@/app/components/reserve/Time";
 import type { OptionsServicesType } from "@/app/services/getOptionsServices";
 import type { UnavailableDateTimeType } from "@/app/services/getUnavailableDateTimes";
@@ -27,6 +28,7 @@ const MemoizedCalendar = memo(Calendar);
 const MemoizedTime = memo(Time);
 const MemoizedOptions = memo(Options);
 const MemoizedCustomer = memo(Customer);
+const MemoizedParticipants = memo(Participants);
 const MemoizedDiscoveryMethod = memo(DiscoveryMethod);
 const MemoizedDetails = memo(Details);
 
@@ -36,7 +38,8 @@ export default function ReservationForm({
   discoveryMethods,
   unavailableDateTimes,
 }: ReservationFormProps) {
-  const methods = useFormContext<IFormInput>();
+  const { control, handleSubmit, watch, setValue } =
+    useFormContext<IFormInput>();
   const router = useRouter();
 
   // 価格計算
@@ -44,8 +47,20 @@ export default function ReservationForm({
     return (
       selectedOptions: IFormInput["options"],
       availableOptions: OptionsServicesType,
-    ): number => {
-      let totalPrice = 5500;
+      adultCount: number | undefined,
+      childCount: number | undefined,
+    ): { subtotal: number; total: number } => {
+      let subtotalPrice = 5000;
+
+      // 大人の人数料金の加算 (adultCountが数値で、かつ1より大きい場合のみ)
+      if (typeof adultCount === "number" && adultCount > 1) {
+        subtotalPrice += (adultCount - 1) * 1500;
+      }
+
+      // 子供料金の加算 (childCountが数値の場合のみ)
+      if (typeof childCount === "number" && childCount > 0) {
+        subtotalPrice += childCount * 500;
+      }
 
       for (const [optionName, optionValue] of Object.entries(selectedOptions)) {
         const option = availableOptions.find(
@@ -54,49 +69,65 @@ export default function ReservationForm({
         if (option) {
           if (typeof optionValue === "boolean") {
             if (optionValue) {
-              totalPrice += option.Option.price;
+              subtotalPrice += option.Option.price;
             }
           } else if (typeof optionValue === "number") {
             if (optionValue > 0) {
-              totalPrice += option.Option.price * optionValue;
+              subtotalPrice += option.Option.price * optionValue;
             }
           }
         }
       }
 
-      return totalPrice;
+      // 消費税10%を加算し、小数点以下を切り捨て
+      const total = Math.floor(subtotalPrice * 1.1);
+      return { subtotal: subtotalPrice, total };
     };
   }, []);
 
   const watchedOptions = useWatch({
-    control: methods.control,
+    control,
     name: "options",
   });
+  const watchedAdultCount = useWatch({
+    control,
+    name: "customer.adultCount",
+  });
+  const watchedChildCount = useWatch({
+    control,
+    name: "customer.childCount",
+  });
+
   useEffect(() => {
-    const totalPrice = memoizedCalculateTotalPrice(
+    const prices = memoizedCalculateTotalPrice(
       watchedOptions,
       optionsServices,
+      watchedAdultCount,
+      watchedChildCount,
     );
-    methods.setValue("totalPrice", totalPrice, { shouldValidate: true });
+    setValue("subTotalPrice", prices.subtotal, { shouldValidate: false });
+    setValue("totalPrice", prices.total, { shouldValidate: true });
   }, [
     watchedOptions,
     optionsServices,
+    watchedAdultCount,
+    watchedChildCount,
     memoizedCalculateTotalPrice,
-    methods.setValue,
+    setValue,
   ]);
 
-  // BBQセットのオプションを追加した場合、利用時間を6時間にする
-  const startDateTime = methods.watch("startDateTime");
+  // BBQセットのオプションを追加した場合、利用時間を+2時間する
+  const startDateTime = watch("startDateTime");
   useEffect(() => {
-    if (!methods.setValue) return;
+    if (!setValue) return;
     if (startDateTime == null) return;
 
-    if (watchedOptions.bbqSet === true) {
-      methods.setValue("endDateTime", addHours(startDateTime, 6));
+    if (watchedOptions?.bbqSet === true) {
+      setValue("endDateTime", addHours(startDateTime, 3 + 2));
     } else {
-      methods.setValue("endDateTime", addHours(startDateTime, 4));
+      setValue("endDateTime", addHours(startDateTime, 3));
     }
-  }, [startDateTime, watchedOptions.bbqSet, methods.setValue]);
+  }, [startDateTime, watchedOptions, setValue]);
 
   const onSubmit = useCallback<SubmitHandler<IFormInput>>(() => {
     router.push("/confirm");
@@ -105,13 +136,14 @@ export default function ReservationForm({
   return (
     <form
       className="grid grid-cols-1 lg:grid-cols-3"
-      onSubmit={methods.handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(onSubmit)}
     >
       <div className="col-span-1 flex justify-center">
         <MemoizedCalendar minDate={minDate} />
       </div>
       <div className="col-span-1 mx-auto flex w-full max-w-4xl flex-col gap-8 lg:col-span-2">
         <MemoizedTime unavailableDateTimes={unavailableDateTimes} />
+        <MemoizedParticipants />
         <MemoizedOptions optionsServices={optionsServices} />
         <MemoizedCustomer />
         <MemoizedDiscoveryMethod discoveryMethods={discoveryMethods} />

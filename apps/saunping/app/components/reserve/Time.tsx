@@ -61,13 +61,11 @@ export default function Time({ unavailableDateTimes }: TimeProps) {
     fetchData();
   }, [startDateTime.value]);
 
-  const dateTimes = [11, 12, 13].map((hour) =>
-    set(startDateTime.value, {
-      hours: hour,
-      minutes: 0,
-      seconds: 0,
-      milliseconds: 0,
-    }),
+  const dateTimes: Date[] = [
+    { hours: 10, minutes: 30 },
+    { hours: 13, minutes: 30 },
+  ].map((time) =>
+    set(startDateTime.value, { ...time, seconds: 0, milliseconds: 0 }),
   );
 
   const getAvailableCount = () => {

@@ -67,8 +67,7 @@ export default function Time({ unavailableDateTimes }: TimeProps) {
   }
 
   const dateTimes: Date[] = [
-    { hours: 9, minutes: 0 },
-    { hours: 11, minutes: 30 },
+    { hours: 11, minutes: 0 },
     { hours: 14, minutes: 0 },
   ].map((time) =>
     set(startDateTime.value, { ...time, seconds: 0, milliseconds: 0 }),
