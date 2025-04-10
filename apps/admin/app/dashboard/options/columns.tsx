@@ -64,6 +64,13 @@ export const columns: ColumnDef<OptionsServicesType[number]>[] = [
     cell: (info) => info.row.original.Option.displayType,
   },
   {
+    accessorKey: "visible",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="表示" />
+    ),
+    cell: (info) => (info.row.original.Option.visible ? "表示" : "非表示"),
+  },
+  {
     accessorKey: "order",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="表示順" />

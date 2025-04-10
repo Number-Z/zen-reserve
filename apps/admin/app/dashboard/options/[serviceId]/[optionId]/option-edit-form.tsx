@@ -42,6 +42,7 @@ export default function OptionEditForm({
       displayType: optionService.Option
         .displayType as keyof typeof DISPLAY_TYPE,
       order: optionService.order,
+      visible: optionService.Option.visible ?? true,
     },
   });
   const { isSubmitting, isValid } = form.formState;

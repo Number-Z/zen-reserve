@@ -10,6 +10,9 @@ export async function getOptionsServices() {
       Service: {
         name: SERVICE_NAME,
       },
+      Option: {
+        visible: true,
+      },
     },
     include: {
       Option: true,

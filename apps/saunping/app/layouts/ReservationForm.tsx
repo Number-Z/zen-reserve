@@ -53,8 +53,8 @@ export default function ReservationForm({
       let subtotalPrice = 5000;
 
       // 大人の人数料金の加算 (adultCountが数値で、かつ1より大きい場合のみ)
-      if (typeof adultCount === "number" && adultCount > 1) {
-        subtotalPrice += (adultCount - 1) * 1500;
+      if (typeof adultCount === "number" && adultCount > 0) {
+        subtotalPrice += adultCount * 1500;
       }
 
       // 子供料金の加算 (childCountが数値の場合のみ)

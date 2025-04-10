@@ -18,6 +18,7 @@ export default async function updateOptionService(
         stock: optionService.stock === "" ? null : optionService.stock,
         limit: optionService.limit === "" ? null : optionService.limit,
         displayType: optionService.displayType,
+        visible: optionService.visible,
       },
     });
 

@@ -27,6 +27,7 @@ export const optionServiceSchema = z.object({
     .or(z.literal("")),
   displayType: z.nativeEnum(DISPLAY_TYPE),
   order: z.coerce.number({ message: "表示順を入力してください" }),
+  visible: z.boolean().default(true),
 });
 
 export type OptionServiceSchemaType = z.infer<typeof optionServiceSchema>;

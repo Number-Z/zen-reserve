@@ -21,6 +21,9 @@ export async function GET(req: NextRequest) {
   const utcEndOfDay = subHours(jstEndOfDay, 9);
 
   const options = await prisma.option.findMany({
+    where: {
+      visible: true,
+    },
     select: {
       optionId: true,
       name: true,
